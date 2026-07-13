@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유플러스 CFO Baseball Day 2026</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" onerror="console.error('firebase-app-compat.js 로드 실패: gstatic.com 접근이 네트워크에서 차단되었을 수 있습니다.')"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" onerror="console.error('firebase-database-compat.js 로드 실패: gstatic.com 접근이 네트워크에서 차단되었을 수 있습니다.')"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#C8102E;--red2:#a00d24;--red3:#f03050;
+  --navy:#0d1f3c;--navy2:#1e3460;
+  --gold:#f0b429;--gold2:#c8911a;
+  --bg:#f8f8f6;--card:#fff;
+  --text:#1a1a2e;--text2:#44446a;--text3:#8888aa;
+  --line:rgba(0,0,0,0.08);
+  --success:#16a34a;--success-bg:rgba(22,163,74,0.08);
+}
+html,body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:repeating-linear-gradient(90deg,transparent 0,transparent 29px,rgba(0,0,0,0.036) 29px,rgba(0,0,0,0.036) 33px);}
+
+.page{display:none;position:relative;z-index:1;min-height:100vh;}
+.page.active{display:block;}
+.wrap{max-width:480px;margin:0 auto;padding:0 16px 80px;}
+
+/* 헤더 */
+.header{text-align:center;padding:28px 0 20px;}
+.lg-logo{display:inline-block;background:var(--red);padding:10px 22px 8px;border-radius:3px;box-shadow:0 4px 18px rgba(200,16,46,.28);position:relative;margin-bottom:14px;}
+.lg-logo::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top:8px solid var(--red);border-bottom:none;}
+.logo-lg{font-size:13px;font-weight:900;color:#fff;letter-spacing:.18em;display:block;line-height:1;margin-bottom:1px;}
+.logo-twins{font-size:28px;font-weight:900;color:#fff;letter-spacing:.06em;display:block;line-height:1;text-shadow:2px 2px 0 var(--red2);}
+.logo-seoul{font-size:10px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.25em;display:block;margin-top:3px;}
+.h-eyebrow{font-size:11px;letter-spacing:.18em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;}
+.h-title{font-size:21px;font-weight:900;color:var(--navy);line-height:1.2;margin-bottom:2px;}
+.h-title .r{color:var(--red);}
+.cheer{display:inline-block;margin-top:10px;background:var(--gold);color:var(--red);font-size:13px;font-weight:900;padding:5px 18px;border-radius:2px;letter-spacing:.08em;box-shadow:0 2px 8px rgba(240,180,41,.35);}
+
+/* 카드 */
+.card{background:var(--card);border:.5px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.05);margin-bottom:10px;}
+.card-accent{height:3px;background:var(--red);}
+.card-accent.gold{background:var(--gold);}
+.card-head{display:flex;align-items:center;gap:10px;padding:13px 16px 11px;border-bottom:.5px solid var(--line);cursor:pointer;user-select:none;}
+.card-head.no-toggle{cursor:default;}
+.ci{font-size:17px;}
+.ctw{flex:1;min-width:0;}
+.ct{font-size:14px;font-weight:700;color:var(--text);}
+/* 헤더 우측: 뱃지 + 제출값 미리보기 + 화살표 */
+.card-head-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.cbadge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.cb-pre{background:rgba(240,180,41,.14);color:#9a6600;}
+.cb-live{background:rgba(200,16,46,.1);color:var(--red);}
+.cb-done{background:rgba(22,163,74,.1);color:var(--success);}
+.cb-locked{background:rgba(0,0,0,.06);color:var(--text3);}
+/* 접었을 때 제출값 미리보기 */
+.preview-chip{font-size:11px;font-weight:700;color:var(--navy);background:rgba(13,31,60,.07);border-radius:20px;padding:2px 8px;display:none;white-space:nowrap;}
+.preview-chip.show{display:inline-block;}
+.cv{font-size:10px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.cv.open{transform:rotate(180deg);}
+.cbody{padding:15px 16px;}
+.cbody.collapsed{display:none;}
+
+/* 폼 */
+.field{margin-bottom:11px;}
+.field label{font-size:12px;color:var(--text3);margin-bottom:5px;display:block;}
+.field input,.field select{width:100%;padding:10px 13px;background:#f9f9f9;border:.5px solid rgba(0,0,0,.13);border-radius:8px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.field input:focus,.field select:focus{border-color:var(--red);background:#fff;}
+.field input::placeholder{color:var(--text3);}
+.field select:disabled{opacity:.4;}
+
+/* 인증 박스 */
+.verify-box{background:rgba(200,16,46,.04);border:1px dashed rgba(200,16,46,.3);border-radius:9px;padding:11px 13px;margin-bottom:13px;}
+.vl{font-size:11px;color:var(--red);margin-bottom:6px;font-weight:700;letter-spacing:.04em;}
+.verify-box input{width:100%;padding:10px;background:#fff;border:.5px solid rgba(200,16,46,.22);border-radius:8px;color:var(--text);font-family:inherit;outline:none;letter-spacing:.2em;text-align:center;font-size:20px;font-weight:900;}
+.vh{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.55;}
+
+/* 버튼 */
+.btn{width:100%;padding:13px;border-radius:9px;background:var(--red);color:#fff;font-size:15px;font-weight:900;border:none;cursor:pointer;font-family:inherit;transition:all .15s;letter-spacing:.02em;box-shadow:0 3px 12px rgba(200,16,46,.25);border-bottom:3px solid var(--red2);}
+.btn:hover{background:var(--red3);transform:translateY(-1px);}
+.btn:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn:disabled{opacity:.45;cursor:default;transform:none;}
+.btn.navy{background:var(--navy);border-bottom-color:#071429;box-shadow:0 3px 12px rgba(13,31,60,.2);}
+.btn.sm{font-size:13px;padding:10px;}
+.btn.gold-btn{background:var(--gold);color:var(--navy);border-bottom-color:var(--gold2);box-shadow:0 3px 12px rgba(240,180,41,.3);}
+.btn.outline{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:none;border-bottom:1.5px solid var(--red);}
+
+/* 성공 */
+.succ{display:none;text-align:center;padding:16px;background:var(--success-bg);border-radius:9px;border:.5px solid rgba(22,163,74,.2);margin-top:9px;}
+.succ.show{display:block;}
+.succ .si{font-size:24px;margin-bottom:4px;}
+.succ .stl{font-size:14px;font-weight:700;color:var(--success);margin-bottom:2px;}
+.succ .sss{font-size:12px;color:var(--text3);}
+
+/* 잠김 */
+.blocked-box{background:rgba(0,0,0,.03);border-radius:9px;border:.5px solid var(--line);padding:16px;text-align:center;}
+.blocked-box .bi{font-size:22px;margin-bottom:6px;}
+.blocked-box .bt{font-size:13px;font-weight:700;color:var(--text3);}
+.blocked-box .bs{font-size:12px;color:var(--text3);margin-top:3px;}
+
+/* 참가자 뱃지 */
+.user-badge{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;border-radius:10px;padding:10px 14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(13,31,60,.15);}
+.ub-avatar{width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ub-info{flex:1;}
+.ub-name{font-size:14px;font-weight:700;}
+.ub-dept{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px;}
+
+/* 이닝 탭 */
+.itabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px;}
+.itab{padding:5px 9px;border-radius:20px;font-size:12px;font-weight:500;background:#f0f0f2;border:.5px solid rgba(0,0,0,.1);cursor:pointer;color:var(--text2);transition:all .15s;font-family:inherit;}
+.itab.active{background:var(--red);color:#fff;border-color:var(--red);font-weight:700;}
+/* done: 베팅 완료 — 클릭은 가능하되 새 베팅 불가 */
+.itab.done{background:rgba(22,163,74,.1);color:var(--success);border-color:rgba(22,163,74,.22);}
+.itab.done.active{background:var(--success);color:#fff;border-color:var(--success);}
+/* result: 관리자가 결과 입력한 회차 */
+.itab.result-correct{background:rgba(22,163,74,.18);color:var(--success);border-color:rgba(22,163,74,.3);font-weight:700;}
+.itab.result-wrong{background:rgba(200,16,46,.08);color:var(--red);border-color:rgba(200,16,46,.2);}
+
+/* 점수 선택 */
+.score-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:13px;}
+.sopt{padding:12px 5px;border-radius:9px;text-align:center;border:1.5px solid rgba(0,0,0,.1);background:#fafafa;cursor:pointer;transition:all .15s;color:var(--text);font-family:inherit;}
+.sopt:hover{border-color:var(--red);background:rgba(200,16,46,.05);}
+.sopt.sel{border-color:var(--red);background:rgba(200,16,46,.08);box-shadow:0 0 8px rgba(200,16,46,.1);}
+.sopt:disabled{opacity:.45;cursor:default;}
+.sopt .sv{font-size:18px;font-weight:900;display:block;color:var(--navy);}
+.sopt .sl{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* 홈런 선택 */
+.hr-opts{display:flex;gap:6px;margin-bottom:13px;}
+.hropt{flex:1;padding:11px 5px;border-radius:9px;text-align:center;border:1.5px solid rgba(0,0,0,.1);background:#fafafa;cursor:pointer;transition:all .15s;font-family:inherit;}
+.hropt:hover{border-color:var(--red);background:rgba(200,16,46,.05);}
+.hropt.sel{border-color:var(--red);background:rgba(200,16,46,.08);}
+.hropt .he{font-size:18px;display:block;margin-bottom:2px;}
+.hropt .hl{font-size:13px;font-weight:700;color:var(--text);}
+
+/* 점수 맞추기 */
+.score-row{display:flex;align-items:center;gap:8px;}
+.score-row input{flex:1;text-align:center;font-size:22px;font-weight:900;padding:11px 6px;}
+.score-vs{font-size:14px;color:var(--text3);font-weight:700;flex-shrink:0;}
+.team-label{font-size:11px;color:var(--text3);text-align:center;margin-top:4px;}
+
+/* 이닝 결과 패널 */
+.inning-result-panel{background:#f9f9f9;border-radius:9px;padding:12px 13px;margin-top:10px;border:.5px solid var(--line);}
+.irp-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;}
+.irp-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:.5px solid var(--line);font-size:12px;}
+.irp-row:last-child{border:none;}
+.irp-correct{color:var(--success);font-weight:700;}
+.irp-wrong{color:var(--text3);}
+
+/* 리더보드 */
+.lb-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid var(--line);}
+.lb-row:last-child{border:none;}
+.lb-rk{font-size:13px;min-width:24px;}
+.lb-nm{flex:1;font-size:13px;color:var(--text);}
+.lb-dept-tag{font-size:11px;color:var(--text3);}
+.lb-sc{font-size:13px;font-weight:700;color:var(--success);}
+
+/* 공지 */
+.notice-item{padding:9px 0;border-bottom:.5px solid var(--line);display:flex;gap:10px;align-items:flex-start;}
+.notice-item:last-child{border:none;}
+.notice-time{font-size:11px;font-weight:700;color:var(--red);min-width:58px;padding-top:2px;flex-shrink:0;}
+.notice-txt{font-size:13px;color:var(--text2);line-height:1.6;flex:1;}
+.notice-txt b{color:var(--text);font-weight:700;}
+.notice-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.notice-chip{display:inline-block;font-size:11px;background:rgba(240,180,41,.18);color:#9a6600;border-radius:4px;padding:2px 7px;margin-top:4px;font-weight:500;}
+.notice-chip2{display:inline-block;font-size:11px;background:rgba(240,180,41,.18);color:#9a6600;border-radius:4px;padding:2px 7px;margin-top:4px;font-weight:500;}
+
+/* 등록 현황 */
+.reg-stat-row{display:flex;gap:8px;margin-bottom:10px;}
+.reg-stat-box{flex:1;background:#f9f9f9;border-radius:8px;padding:10px 12px;text-align:center;border:.5px solid var(--line);}
+.rsb-num{font-size:22px;font-weight:900;color:var(--navy);}
+.rsb-label{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* 관리자 */
+.admin-fab{position:fixed;bottom:20px;left:16px;z-index:100;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);border:.5px solid rgba(0,0,0,.1);box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .15s;backdrop-filter:blur(8px);}
+.admin-fab:hover{transform:scale(1.08);}
+.overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.38);backdrop-filter:blur(3px);}
+.overlay.open{display:flex;align-items:flex-end;justify-content:center;}
+.bottom-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:18px 18px 36px;box-shadow:0 -4px 30px rgba(0,0,0,.12);max-height:88vh;overflow-y:auto;}
+.bs-handle{width:34px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;}
+.bs-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;}
+.af{margin-bottom:10px;}
+.af label{font-size:12px;color:var(--text3);margin-bottom:4px;display:block;}
+.af input,.af select{width:100%;padding:9px 12px;background:#f9f9f9;border:.5px solid rgba(0,0,0,.12);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.af input:focus{border-color:var(--navy);}
+.btn-close{width:100%;padding:11px;border-radius:8px;background:#f0f0f2;color:var(--text2);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-top:10px;}
+
+/* 추첨 결과 */
+.prize-result{background:rgba(240,180,41,.1);border:.5px solid rgba(240,180,41,.3);border-radius:10px;padding:14px;margin-top:10px;}
+.pr-title{font-size:13px;font-weight:700;color:#9a6600;margin-bottom:8px;}
+.pr-row{font-size:13px;color:var(--text);padding:5px 0;border-bottom:.5px solid var(--line);}
+.pr-row:last-child{border:none;}
+.pr-win{font-weight:700;color:var(--navy2);}
+
+/* 관리자 탭 */
+.admin-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.admin-tab{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:700;border:.5px solid rgba(0,0,0,.1);background:#f9f9f9;cursor:pointer;font-family:inherit;color:var(--text2);transition:all .15s;}
+.admin-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+
+.div{height:.5px;background:var(--line);margin:12px 0;}
+.hint-box{background:#f9f9f9;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:11px;color:var(--text3);line-height:1.7;}
+.prize-board-item{background:#fafafa;border:.5px solid var(--line);border-radius:9px;padding:11px 13px;}
+.pbi-winner-label{font-size:12px;font-weight:700;color:var(--success);margin-bottom:6px;}
+.pbi-winner-label.draw{color:var(--red);}
+.pbi-person{display:inline-block;font-size:12px;background:rgba(22,163,74,.08);color:var(--success);border-radius:4px;padding:2px 8px;margin:2px 3px 2px 0;font-weight:700;}
+.pbi-person.winner{background:rgba(13,31,60,.08);color:var(--navy2);}
+
+.lock-row{display:flex;align-items:center;justify-content:space-between;background:#f9f9f9;border-radius:10px;padding:11px 13px;border:.5px solid var(--line);margin-bottom:4px;}
+.lock-row-left{flex:1;}
+.lock-row-title{font-size:13px;font-weight:700;color:var(--text);}
+.lock-row-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.lock-btn{font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;border:none;cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0;}
+.lock-btn.open{background:rgba(22,163,74,.12);color:var(--success);}
+.lock-btn.closed{background:rgba(200,16,46,.12);color:var(--red);}
+.lock-status-txt{font-size:11px;padding:2px 4px 8px;color:var(--text3);}
+
+/* 이닝 회차 compact row */
+.inning-lock-grid{display:flex;flex-direction:column;gap:5px;}
+.inning-lock-item{display:flex;align-items:center;gap:8px;background:#f9f9f9;border-radius:8px;padding:8px 12px;border:.5px solid var(--line);}
+.ili-label{font-size:13px;font-weight:700;color:var(--text);min-width:36px;}
+.ili-prize{font-size:11px;color:var(--gold2);flex:1;}
+.ili-btn{font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0;}
+.ili-btn.open{background:rgba(22,163,74,.12);color:var(--success);}
+.ili-btn.closed{background:rgba(200,16,46,.12);color:var(--red);}
+
+.ap-section-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;display:block;}
+.reg-dept-group{border:.5px solid var(--line);border-radius:8px;margin-bottom:5px;overflow:hidden;}
+.reg-dept-head{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f9f9f9;cursor:pointer;user-select:none;}
+.reg-dept-name{font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.reg-dept-count{font-size:11px;font-weight:700;color:var(--navy);background:rgba(13,31,60,.07);border-radius:20px;padding:1px 8px;}
+.reg-dept-arrow{font-size:9px;color:var(--text3);transition:transform .15s;}
+.reg-dept-arrow.open{transform:rotate(180deg);}
+.reg-dept-body{padding:2px 10px 4px;}
+.reg-dept-body.collapsed{display:none;}
+.rank-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--line);}
+.rank-row:last-child{border:none;}
+
+@media(max-width:380px){.logo-twins{font-size:24px;}.h-title{font-size:18px;}}
+
+/* ── 최종 시상대 ── */
+.podium-wrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:18px 0 10px;}
+.podium-slot{display:flex;flex-direction:column;align-items:center;flex:1;}
+.podium-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:5px;box-shadow:0 2px 8px rgba(0,0,0,.12);}
+.podium-avatar.gold{background:linear-gradient(135deg,#f0b429,#e09010);}
+.podium-avatar.silver{background:linear-gradient(135deg,#b8c4cc,#8a99a4);}
+.podium-avatar.bronze{background:linear-gradient(135deg,#c97b4b,#a05a2c);}
+.podium-name{font-size:13px;font-weight:700;color:var(--text);text-align:center;margin-bottom:2px;line-height:1.3;}
+.podium-dept{font-size:10px;color:var(--text3);text-align:center;margin-bottom:4px;}
+.podium-score{font-size:12px;font-weight:700;border-radius:20px;padding:2px 9px;margin-bottom:5px;}
+.podium-score.gold{color:#7a4f00;background:rgba(240,180,41,.18);}
+.podium-score.silver{color:#445060;background:rgba(140,160,175,.15);}
+.podium-score.bronze{color:#7a3a10;background:rgba(200,120,60,.12);}
+.podium-block{width:100%;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;}
+.podium-block.gold{background:var(--gold);height:72px;}
+.podium-block.silver{background:#8a99a4;height:54px;}
+.podium-block.bronze{background:#b07840;height:42px;}
+.rank-table{margin-top:2px;}
+.rank-table-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--line);font-size:12px;}
+.rank-table-row:last-child{border:none;}
+.rank-num{min-width:22px;font-weight:700;color:var(--text2);font-size:12px;}
+.rank-nm{flex:1;font-size:13px;}
+.rank-dept-sm{font-size:11px;color:var(--text3);}
+.rank-sc{font-size:13px;font-weight:700;color:var(--success);}
+.rank-ellipsis{text-align:center;font-size:13px;color:var(--text3);padding:6px 0;letter-spacing:.1em;}
+.final-board-locked{text-align:center;padding:20px 0;}
+.final-board-locked .fbl-icon{font-size:28px;margin-bottom:6px;}
+.final-board-locked .fbl-txt{font-size:13px;color:var(--text3);}
+.my-final-score{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(13,31,60,.2);}
+.my-final-score .mfs-label{font-size:12px;color:rgba(255,255,255,.7);font-weight:700;}
+.my-final-score .mfs-row{display:flex;align-items:center;gap:8px;}
+.my-final-score .mfs-rank{font-size:15px;font-weight:900;color:var(--gold);}
+.my-final-score .mfs-score{font-size:20px;font-weight:900;color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- ══════════ PAGE 1: 등록 ══════════ -->
+<div class="page active" id="page-register">
+<div class="wrap">
+  <div class="header">
+    <div class="lg-logo">
+      <span class="logo-lg">LG</span>
+      <span class="logo-twins">TWINS</span>
+      <span class="logo-seoul">SEOUL</span>
+    </div>
+    <div class="h-eyebrow">U+ CFO Baseball Day</div>
+    <div class="h-title">유플러스 CFO <span class="r">Baseball</span> Day 2026</div>
+    <div class="cheer">무적 LG &nbsp;끝까지 TWINS !</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:8px;">트윈스의 12번째 선수가 되어주세요 ⚾</div>
+  </div>
+
+  <div class="card">
+    <div class="card-accent"></div>
+    <div class="card-head no-toggle">
+      <span class="ci">👤</span>
+      <div class="ctw"><div class="ct">참가자 정보</div><span class="cbadge cb-pre">이름·부서 등록</span></div>
+    </div>
+    <div class="cbody">
+      <div class="field"><label>담당</label>
+        <select id="r-d1" onchange="updateD2('r-d1','r-d2')">
+          <option value="">담당 선택</option>
+          <option>CFO</option><option>경영기획담당</option><option>금융담당</option>
+          <option>동반성장/전략구매담당</option><option>부동산관리담당</option>
+          <option>위기관리담당</option><option>회계담당</option>
+        </select>
+      </div>
+      <div class="field"><label>부서</label>
+        <select id="r-d2" disabled><option value="">담당을 먼저 선택하세요</option></select>
+      </div>
+      <div class="field"><label>이름</label>
+        <input type="text" id="r-name" placeholder="홍길동" maxlength="10">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-accent"></div>
+    <div class="card-head no-toggle">
+      <span class="ci">🔑</span>
+      <div class="ctw"><div class="ct">현장 인증</div><span class="cbadge cb-pre">단톡방 코드 입력</span></div>
+    </div>
+    <div class="cbody">
+      <div class="verify-box">
+        <div class="vl">현장 인증 코드 (4자리)</div>
+        <input type="text" id="r-code" maxlength="4" placeholder="0000" oninput="this.value=this.value.toUpperCase()">
+        <div class="vh">경기 시작 직전 단톡방에 공지되는 코드입니다. 현장에 계신 분만 참여할 수 있어요.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-accent gold"></div>
+    <div class="card-head" onclick="toggleCard('reg-notice')">
+      <span class="ci">📅</span>
+      <div class="ctw"><div class="ct">오늘의 행사 일정</div></div>
+      <span class="cv" id="cv-reg-notice">▼</span>
+    </div>
+    <div class="cbody collapsed" id="reg-notice">
+      <div id="notice-content-reg"></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="doRegister()">참가 등록하기 ⚾</button>
+</div>
+</div>
+
+<!-- ══════════ PAGE 2: 게임 ══════════ -->
+<div class="page" id="page-game">
+<div class="wrap">
+  <div style="padding-top:20px;"></div>
+  <div class="user-badge">
+    <div class="ub-avatar">⚾</div>
+    <div class="ub-info">
+      <div class="ub-name" id="badge-name">—</div>
+      <div class="ub-dept" id="badge-dept">—</div>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);">트윈스 12번째 선수</div>
+  </div>
+  <div style="text-align:right;margin:-6px 0 12px;">
+    <span style="font-size:11px;color:var(--text3);text-decoration:underline;cursor:pointer;" onclick="editMyInfo()">담당/부서/이름을 잘못 입력했나요? 다시 등록하기</span>
+  </div>
+
+  <!-- NOTICE -->
+  <div class="card">
+    <div class="card-accent gold"></div>
+    <div class="card-head" onclick="toggleCard('g-notice')">
+      <span class="ci">📣</span>
+      <div class="ctw"><div class="ct">[Notice] 오늘의 행사 일정</div></div>
+      <span class="cv open" id="cv-g-notice">▼</span>
+    </div>
+    <div class="cbody" id="g-notice">
+      <div style="font-size:13px;font-weight:700;color:var(--red);background:rgba(200,16,46,.05);border-radius:8px;padding:10px 12px;margin-bottom:10px;text-align:center;line-height:1.6;">
+        🎁 마음껏 즐긴 분들에게 경품이 팡팡~!<br>
+        <span style="font-size:12px;font-weight:400;color:var(--text3);">최종 1등 유니폼 · 2등 텀블러 · 3등 모자 · 이닝 경품도 있어요</span>
+      </div>
+      <div id="notice-content-game"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:10px;padding-top:8px;border-top:.5px solid var(--line);">📌 상세 일정은 변경될 수 있습니다. 미숙하더라도 이해해 주세요~ 재밌게 즐기고 가요! 🙌</div>
+    </div>
+  </div>
+
+  <!-- 점수 맞추기 -->
+  <div class="card">
+    <div class="card-accent"></div>
+    <div class="card-head" onclick="toggleCard('g-score')">
+      <span class="ci">🏟</span>
+      <div class="ctw"><div class="ct">[Game] 최종 점수 맞히기</div></div>
+      <div class="card-head-right">
+        <span class="preview-chip" id="preview-score"></span>
+        <span class="cbadge cb-pre" id="badge-score">~19시까지</span>
+        <span class="cv" id="cv-g-score">▼</span>
+      </div>
+    </div>
+    <div class="cbody collapsed" id="g-score">
+      <div id="score-blocked" class="blocked-box" style="display:none;">
+        <div class="bi">🔒</div><div class="bt">접수 마감</div>
+        <div class="bs">시간이 마감되었어요ㅠ 이닝 베팅을 즐겨주세요!</div>
+      </div>
+      <div id="score-content">
+      <div id="score-form">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">오늘 경기 최종 스코어를 예측하세요! LG가 이겨야죠 ⚾</div>
+        <div style="font-size:11px;background:rgba(200,16,46,.06);color:var(--red);border-radius:6px;padding:5px 10px;margin-bottom:12px;font-weight:500;">⚠️ 기회는 단 한 번뿐! 신중히 선택하세요!</div>
+        <div class="field">
+          <label>최종 스코어 예측</label>
+          <div class="score-row">
+            <div style="flex:1;"><input type="number" id="g-sopp" min="0" max="30" placeholder="0" style="text-align:center;font-size:22px;font-weight:900;padding:11px 6px;"><div class="team-label">상대팀 (KT)</div></div>
+            <div class="score-vs">:</div>
+            <div style="flex:1;"><input type="number" id="g-slg" min="0" max="30" placeholder="0" style="text-align:center;font-size:22px;font-weight:900;padding:11px 6px;"><div class="team-label">⚡ LG 트윈스</div></div>
+          </div>
+        </div>
+        <button class="btn" onclick="subScore()">점수 예측 제출</button>
+      </div>
+      </div>
+      <div class="succ" id="succ-score">
+        <div class="si">🏟</div>
+        <div class="stl" id="succ-score-txt">점수 예측 완료!</div>
+        <div class="sss">경기 종료 후 결과를 발표합니다</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 홈런 예측 -->
+  <div class="card">
+    <div class="card-accent"></div>
+    <div class="card-head" onclick="toggleCard('g-hr')">
+      <span class="ci">💥</span>
+      <div class="ctw"><div class="ct">[Game] 오늘 LG 홈런 수 예측</div></div>
+      <div class="card-head-right">
+        <span class="preview-chip" id="preview-hr"></span>
+        <span class="cbadge cb-pre" id="badge-hr">~19시까지</span>
+        <span class="cv" id="cv-g-hr">▼</span>
+      </div>
+    </div>
+    <div class="cbody collapsed" id="g-hr">
+      <div id="hr-blocked" class="blocked-box" style="display:none;">
+        <div class="bi">🔒</div><div class="bt">접수 마감</div>
+        <div class="bs">시간이 마감되었어요ㅠ 이닝 베팅을 즐겨주세요!</div>
+      </div>
+      <div id="hr-content">
+      <div id="hr-form">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">오늘 LG 트윈스가 홈런을 몇 개 칠까요?</div>
+        <div style="font-size:11px;background:rgba(200,16,46,.06);color:var(--red);border-radius:6px;padding:5px 10px;margin-bottom:12px;font-weight:500;">⚠️ 기회는 단 한 번뿐! 신중히 선택하세요!</div>
+        <div class="hr-opts">
+          <button class="hropt" onclick="selHR(this,0)"><span class="he">🙏</span><span class="hl">0개</span></button>
+          <button class="hropt" onclick="selHR(this,1)"><span class="he">⚾</span><span class="hl">1개</span></button>
+          <button class="hropt" onclick="selHR(this,2)"><span class="he">💪</span><span class="hl">2개</span></button>
+          <button class="hropt" onclick="selHR(this,3)"><span class="he">🔥</span><span class="hl">3개+</span></button>
+        </div>
+        <button class="btn" onclick="subHR()">홈런 예측 제출</button>
+      </div>
+      </div>
+      <div class="succ" id="succ-hr">
+        <div class="si">💥</div>
+        <div class="stl" id="succ-hr-txt">홈런 예측 완료!</div>
+        <div class="sss">경기 후 결과를 발표합니다</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이닝 베팅판 -->
+  <div class="card">
+    <div class="card-accent"></div>
+    <div class="card-head" onclick="toggleCard('g-inning')">
+      <span class="ci">📊</span>
+      <div class="ctw"><div class="ct">[Game] 이닝 베팅판</div></div>
+      <div class="card-head-right">
+        <span class="cbadge cb-live">경기 중 실시간</span>
+        <span class="cv" id="cv-g-inning">▼</span>
+      </div>
+    </div>
+    <div class="cbody collapsed" id="g-inning">
+      <div class="itabs" id="itabs">
+        <button class="itab active" onclick="selIn(this,1)">1회</button>
+        <button class="itab" onclick="selIn(this,2)">2회</button>
+        <button class="itab" onclick="selIn(this,3)">3회</button>
+        <button class="itab" onclick="selIn(this,4)">4회</button>
+        <button class="itab" onclick="selIn(this,5)">5회</button>
+        <button class="itab" onclick="selIn(this,6)">6회</button>
+        <button class="itab" onclick="selIn(this,7)">7회</button>
+        <button class="itab" onclick="selIn(this,8)">8회</button>
+        <button class="itab" onclick="selIn(this,9)">9회</button>
+      </div>
+      <div id="inning-q" style="font-size:13px;color:var(--text3);margin-bottom:11px;"></div>
+      <div id="inning-bet-area">
+        <div class="score-opts" id="inning-opts">
+          <button class="sopt" onclick="selScore(this,0)"><span class="sv">0</span><span class="sl">0점</span></button>
+          <button class="sopt" onclick="selScore(this,1)"><span class="sv">1</span><span class="sl">1점</span></button>
+          <button class="sopt" onclick="selScore(this,2)"><span class="sv">2</span><span class="sl">2점</span></button>
+          <button class="sopt" onclick="selScore(this,3)"><span class="sv">3</span><span class="sl">3점</span></button>
+          <button class="sopt" onclick="selScore(this,4)"><span class="sv">4</span><span class="sl">4점</span></button>
+          <button class="sopt" onclick="selScore(this,'5+')"><span class="sv">5+</span><span class="sl">5점+</span></button>
+        </div>
+        <button class="btn" id="btn-inning-submit" onclick="subInning()">이번 회 베팅</button>
+        <div class="succ" id="succ-inning">
+          <div class="si">📊</div>
+          <div class="stl" id="succ-inning-txt">1회 베팅 완료!</div>
+          <div class="sss">다음 회 탭을 눌러 계속 베팅하세요</div>
+        </div>
+      </div>
+      <!-- 회차별 결과 (베팅 완료 + 결과 발표된 경우) -->
+      <div id="inning-result-view" style="display:none;" class="inning-result-panel">
+        <div class="irp-title" id="irp-title"></div>
+        <div id="irp-rows"></div>
+      </div>
+      <div class="div"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px;">📋 이 회차 정답자 결과</div>
+      <div id="inning-prize-board"><div style="font-size:12px;color:var(--text3);padding:4px 0;">이닝 종료 후 결과가 발표됩니다</div></div>
+      <div class="div"></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:7px;">🏆 누적 베팅 정답 현황</div>
+      <div id="leaderboard"><div style="font-size:12px;color:var(--text3);text-align:center;padding:9px 0;">베팅 참여 후 순위가 표시됩니다</div></div>
+    </div>
+  </div>
+
+
+  <!-- 최종 결과 -->
+  <div class="card" id="card-final-board">
+    <div class="card-accent gold"></div>
+    <div class="card-head" onclick="toggleCard('g-final')">
+      <span class="ci">🏆</span>
+      <div class="ctw"><div class="ct">[결과] 최종 순위 발표</div></div>
+      <div class="card-head-right">
+        <span class="cbadge" id="badge-final-board" style="background:rgba(240,180,41,.14);color:#9a6600;">경기 종료 후 공개</span>
+        <span class="cv" id="cv-g-final">▼</span>
+      </div>
+    </div>
+    <div class="cbody collapsed" id="g-final">
+      <div id="final-board-content">
+        <div style="font-size:12px;color:var(--text3);text-align:center;padding:16px 0;">경기 종료 후 최종 결과를 공개합니다!</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- 관리자 FAB -->
+<div class="admin-fab" onclick="openAdmin()">⚙️</div>
+
+<!-- 관리자 모달 -->
+<div class="overlay" id="admin-overlay" onclick="closeAdminOut(event)">
+  <div class="bottom-sheet">
+    <div class="bs-handle"></div>
+    <div class="bs-title">⚙️ 관리자</div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('predict')">등록현황</button>
+      <button class="admin-tab" onclick="switchAdminTab('inning')">이닝베팅</button>
+      <button class="admin-tab" onclick="switchAdminTab('rank')">최종결과</button>
+      <button class="admin-tab" onclick="switchAdminTab('setup')">설정</button>
+    </div>
+
+    <!-- 탭1: 등록현황 -->
+    <div class="admin-panel active" id="ap-predict">
+      <!-- 마감 제어 -->
+      <div class="ap-section-title">🔒 마감 제어</div>
+      <div class="lock-row">
+        <div class="lock-row-left">
+          <div class="lock-row-title">최종 점수 · 홈런 예측</div>
+          <div class="lock-row-sub" id="lock-status-game-sub">자동 마감: 7/16 19:00 KST</div>
+        </div>
+        <button class="lock-btn open" id="lock-btn-game" onclick="toggleLock('game')">🔓 열림</button>
+      </div>
+      <div class="lock-status-txt" id="lock-status-game"></div>
+      <div class="div"></div>
+      <!-- 등록 현황 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span class="ap-section-title" style="margin-bottom:0;">📋 등록 현황</span>
+        <button class="btn sm navy" onclick="loadRegStats()" style="padding:4px 10px;font-size:11px;width:auto;">새로고침</button>
+      </div>
+      <div class="reg-stat-row">
+        <div class="reg-stat-box"><div class="rsb-num" id="stat-total">—</div><div class="rsb-label">총 등록</div></div>
+        <div class="reg-stat-box"><div class="rsb-num" id="stat-score">—</div><div class="rsb-label">점수 제출</div></div>
+        <div class="reg-stat-box"><div class="rsb-num" id="stat-hr">—</div><div class="rsb-label">홈런 제출</div></div>
+      </div>
+      <div id="reg-list" style="font-size:12px;color:var(--text3);max-height:280px;overflow-y:auto;margin-bottom:4px;"></div>
+    </div>
+
+    <!-- 탭2: 이닝베팅 -->
+    <div class="admin-panel" id="ap-inning">
+      <div class="ap-section-title">📊 회차별 마감 + 정답 입력</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">① 회 시작 전 마감 → ② 이닝 종료 후 정답 입력 → ③ 결과 처리</div>
+      <div id="inning-combined-grid"></div>
+      <div id="prize-result-area" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- 탭3: 최종결과 -->
+    <div class="admin-panel" id="ap-rank">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span class="ap-section-title" style="margin-bottom:0;">🏆 최종 합산 순위 (게임1+2+3, 실시간)</span>
+        <button class="btn sm navy" onclick="loadAdminRank()" style="padding:4px 10px;font-size:11px;width:auto;">새로고침</button>
+      </div>
+      <div id="admin-rank-list" style="font-size:12px;color:var(--text3);">새로고침을 눌러 불러오세요</div>
+      <div class="div"></div>
+      <!-- 최종 결과 등록 -->
+      <div class="ap-section-title">🏁 최종 결과 등록</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">경기 종료 후 실제 결과를 입력하면 정답자가 자동 집계됩니다</div>
+      <div class="af"><label>실제 최종 스코어 (KT : LG)</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="number" id="a-final-kt" min="0" max="30" placeholder="KT" style="flex:1;text-align:center;font-size:18px;font-weight:900;">
+          <span style="font-size:14px;color:var(--text3);font-weight:700;">:</span>
+          <input type="number" id="a-final-lg" min="0" max="30" placeholder="LG" style="flex:1;text-align:center;font-size:18px;font-weight:900;">
+        </div>
+      </div>
+      <div class="af"><label>LG 실제 홈런 수</label>
+        <select id="a-final-hr">
+          <option value="0">0개</option><option value="1">1개</option><option value="2">2개</option><option value="3+">3개+</option>
+        </select>
+      </div>
+      <button class="btn sm gold-btn" onclick="processFinalResult()">최종 결과 처리</button>
+      <div id="final-result-area" style="margin-top:10px;"></div>
+      <div class="div"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span class="ap-section-title" style="margin-bottom:0;">📣 최종 순위 참가자 공개</span>
+        <button class="lock-btn" id="final-publish-btn" onclick="toggleFinalPublish()" style="font-size:12px;padding:5px 14px;">⏸ 비공개</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);">최종 결과 처리 후 이 버튼을 눌러야 참가자 화면에 순위가 공개됩니다</div>
+    </div>
+
+    <!-- 탭4: 설정 -->
+    <div class="admin-panel" id="ap-setup">
+      <div class="af"><label>Firebase DB (고정값)</label>
+        <div style="font-size:12px;color:var(--text2);background:#f9f9f9;border:.5px solid rgba(0,0,0,.12);border-radius:8px;padding:9px 12px;word-break:break-all;" id="a-firebase-display"></div>
+      </div>
+      <div id="fb-status" style="font-size:11px;color:var(--text3);margin-bottom:8px;">⚪ 미연결</div>
+      <div class="af"><label>현장 인증 코드 (4자리)</label>
+        <input type="text" id="a-code" maxlength="4" placeholder="현재 코드">
+      </div>
+      <button class="btn sm navy" onclick="saveAdminBase()" style="margin-bottom:10px;">인증 코드 저장</button>
+      <div class="hint-box">Firebase 주소를 바꿔야 한다면 코드 상단의 <code style="font-size:10px;color:var(--navy2);">FB_URL_DEFAULT</code> 상수를 직접 수정하세요.</div>
+      <div class="div"></div>
+      <div class="ap-section-title">🧹 테스트 데이터 초기화</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">테스트하면서 쌓인 등록/제출/경품 데이터를 전부 지우고 실제 행사 전 깨끗한 상태로 되돌립니다. 인증 코드·Firebase 주소는 유지됩니다.</div>
+      <button class="btn sm outline" onclick="resetAllGameData()">전체 데이터 초기화</button>
+    </div>
+
+
+    <button class="btn-close" onclick="closeAdmin()">닫기</button>
+  </div>
+</div>
+
+<script>
+// ─── 담당/부서 매핑 ───
+const DEPT_MAP = {
+  'CFO':['CFO','운영혁신TF'],
+  '경영기획담당':['R TF','ZBB CoE','경영기획담당','경영기획팀','경영분석팀'],
+  '금융담당':['IR팀','금융담당','금융팀','미수관리팀','빌링팀'],
+  '동반성장/전략구매담당':['IT/서비스구매팀','공사구매팀','동반성장전략팀','장비/디바이스구매팀'],
+  '부동산관리담당':['NW계약1팀','NW계약2팀','매장계약팀','부동산관리담당','부동산전략팀'],
+  '위기관리담당':['DR관리TF','리스크선행관리팀','위기관리담당','위기관리팀'],
+  '회계담당':['세무회계팀','재무회계팀','정책회계팀','회계담당'],
+};
+function updateD2(d1Id,d2Id){
+  const v=document.getElementById(d1Id).value,s=document.getElementById(d2Id);
+  s.innerHTML='<option value="">부서 선택</option>';
+  if(v&&DEPT_MAP[v]){DEPT_MAP[v].forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;s.appendChild(o);});s.disabled=false;}
+  else{s.disabled=true;s.innerHTML='<option value="">담당을 먼저 선택하세요</option>';}
+}
+
+// 경품이 지급되는 회차 수(1~N회). N을 넘는 회차는 포인트만 쌓이고 경품은 없음. 나중에 늘리려면 이 숫자만 바꾸면 됨.
+const PRIZE_INNINGS = 5;
+
+// ─── NOTICE 렌더 ───
+const NOTICE_HTML = `
+  <div class="notice-item">
+    <div class="notice-time">19시 전</div>
+    <div class="notice-txt">
+      <b>🏟 최종 점수 &amp; 홈런 예측 게임 접수</b>
+      <div class="notice-sub">CFO님과 사진도 찰칵~ 📸</div>
+      <span class="notice-chip">⚠️ ~19:00 마감</span>
+    </div>
+  </div>
+  <div class="notice-item">
+    <div class="notice-time">매 회 전</div>
+    <div class="notice-txt">
+      <b>📊 이닝 베팅판 오픈</b>
+      <div class="notice-sub">회 시작 전 베팅 마감</div>
+      <span class="notice-chip">1~${PRIZE_INNINGS}회 경품 있음 🎁</span>
+    </div>
+  </div>
+  <div class="notice-item">
+    <div class="notice-time">4회초</div>
+    <div class="notice-txt">
+      <b>🤝 우리 담당님 최고</b>
+      <div class="notice-sub">우리 담당님이 이기면 경품이 슝슝~!</div>
+      <span class="notice-chip">담당님을 응원하세요!</span>
+    </div>
+  </div>
+  <div class="notice-item">
+    <div class="notice-time">6회말</div>
+    <div class="notice-txt">
+      <b>🎟 CFO님 럭키드로우</b>
+      <div class="notice-sub">부사장님 선물 주세요~ 🎁</div>
+      <span class="notice-chip">1등 유니폼 · 2등 텀블러 · 3등 모자</span>
+    </div>
+  </div>
+  <div class="notice-item">
+    <div class="notice-time">경기 후</div>
+    <div class="notice-txt">
+      <b>🏆 최종 1등은 누구?</b>
+      <div class="notice-sub">점수 맞히기 + 홈런 예측 + 이닝 베팅 누적 합산</div>
+      <span class="notice-chip">1등 유니폼 · 2등 텀블러 · 3등 모자</span>
+    </div>
+  </div>`;
+document.getElementById('notice-content-reg').innerHTML = NOTICE_HTML;
+document.getElementById('notice-content-game').innerHTML = NOTICE_HTML;
+
+// ─── 앱 상태 ───
+const FB_URL_DEFAULT = 'https://cfo-baseball-2026-default-rtdb.firebaseio.com';
+let VERIFY_CODE = localStorage.getItem('verify_code') || '2026';
+let FB_URL = FB_URL_DEFAULT; // 항상 고정값 사용 (과거 localStorage에 저장된 값 무시)
+localStorage.removeItem('fb_url');
+let MANUAL_LOCKED = localStorage.getItem('manual_locked') === 'true';
+let FORCE_OPEN = localStorage.getItem('force_open') === 'true';
+// 이닝별 마감: {1:false, 2:false, ...} false=열림 true=마감
+const INNING_LOCK = JSON.parse(localStorage.getItem('inning_lock') || '{}');
+let DB = null;
+let user = JSON.parse(sessionStorage.getItem('user') || 'null');
+let selHRv = null, selInningScore = null, curInning = 1;
+const inningBets = JSON.parse(sessionStorage.getItem('inningBets') || '{}');
+const inningResults = JSON.parse(localStorage.getItem('inningResults') || '{}');
+const prizeWinners = JSON.parse(localStorage.getItem('prizeWinners') || '[]');
+const AUTO_DEADLINE = new Date('2026-07-16T10:00:00Z'); // 2026-07-16 19:00 KST
+
+function isLocked(){
+  if(FORCE_OPEN) return false; // 강제 열기 상태면 항상 열림
+  return MANUAL_LOCKED || new Date() > AUTO_DEADLINE;
+}
+function isInningLocked(n){ return !!INNING_LOCK[n||curInning]; }
+
+// ─── 예측 게임 마감 토글 ───
+function toggleLock(type){
+  if(type==='game'){
+    const currentlyLocked = isLocked();
+    if(currentlyLocked){
+      // 열기: 강제 열기 ON, 수동마감 OFF
+      FORCE_OPEN = true; MANUAL_LOCKED = false;
+      localStorage.setItem('force_open','true');
+      localStorage.setItem('manual_locked','false');
+      if(DB){ fbSet('config/force_open',true); fbSet('config/locked',false); }
+    } else {
+      // 마감: 강제열기 OFF, 수동마감 ON
+      FORCE_OPEN = false; MANUAL_LOCKED = true;
+      localStorage.setItem('force_open','false');
+      localStorage.setItem('manual_locked','true');
+      if(DB){ fbSet('config/force_open',false); fbSet('config/locked',true); }
+    }
+    updateLockUI();
+  }
+}
+let _fbInitRetried=false;
+function initFirebase(){
+  if(!FB_URL) return;
+  if(typeof firebase === 'undefined'){
+    // SDK가 아직 로드되지 않았을 수 있으므로 한 번만 재시도
+    if(!_fbInitRetried){
+      _fbInitRetried=true;
+      setTimeout(initFirebase, 1500);
+      return;
+    }
+    const el=document.getElementById('fb-status');
+    if(el){ el.textContent='🔴 Firebase SDK 로드 실패 (네트워크/광고차단 확인 필요)'; el.style.color='var(--red)'; }
+    console.error('Firebase SDK가 로드되지 않았습니다. gstatic.com 접근이 차단되었거나(사내망/방화벽/광고차단) 오프라인 상태일 수 있습니다. 브라우저 개발자도구 Network 탭에서 firebase-app-compat.js / firebase-database-compat.js 요청이 실패했는지 확인해주세요.');
+    return;
+  }
+  try{
+    if(firebase.apps.length===0) firebase.initializeApp({databaseURL:FB_URL});
+    DB = firebase.database();
+
+    // 연결 상태 확인
+    DB.ref('.info/connected').on('value', snap=>{
+      const connected=snap.val();
+      const el=document.getElementById('fb-status');
+      if(el){
+        el.textContent=connected?'🟢 Firebase 연결됨':'🔴 Firebase 연결 안됨';
+        el.style.color=connected?'var(--success)':'var(--red)';
+      }
+    });
+
+    listenLeaderboard();
+    DB.ref('inningResults').on('value', snap=>{
+      const d=snap.val();
+      if(d){ Object.assign(inningResults,d); refreshInningTabs(); }
+    });
+    DB.ref('prizeBoardData').on('value', snap=>{
+      const d=snap.val();
+      if(d){
+        const cur=JSON.parse(localStorage.getItem('prizeBoardData')||'{}');
+        Object.assign(cur,d); localStorage.setItem('prizeBoardData',JSON.stringify(cur));
+        renderPrizeBoard();
+      }
+    });
+    DB.ref('config/locked').on('value', snap=>{
+      const v=snap.val();
+      if(v!==null){ MANUAL_LOCKED=v; localStorage.setItem('manual_locked',v); updateLockUI(); }
+    });
+    DB.ref('config/force_open').on('value', snap=>{
+      const v=snap.val();
+      if(v!==null){ FORCE_OPEN=v; localStorage.setItem('force_open',v); updateLockUI(); }
+    });
+    DB.ref('config/inning_lock').on('value', snap=>{
+      const d=snap.val();
+      if(d){ Object.assign(INNING_LOCK,d); localStorage.setItem('inning_lock',JSON.stringify(INNING_LOCK)); renderInningCombinedGrid(); updateInningBetUI(); }
+    });
+    DB.ref('config/verify_code').on('value', snap=>{
+      const v=snap.val();
+      if(v){
+        VERIFY_CODE=v; localStorage.setItem('verify_code',v);
+        const el=document.getElementById('a-code'); if(el) el.value=v;
+      }
+    });
+    DB.ref('config/publishedResults').on('value', snap=>{
+      const d=snap.val();
+      if(d){
+        const normalized={};
+        Object.keys(d).forEach(k=>{ normalized[String(k)]=d[k]; });
+        localStorage.setItem('publishedResults',JSON.stringify(normalized));
+        renderPrizeBoard();
+      }
+    });
+    DB.ref('config/prizeWinners').on('value', snap=>{
+      const d=snap.val();
+      if(d){ prizeWinners.length=0; prizeWinners.push(...d); localStorage.setItem('prizeWinners',JSON.stringify(prizeWinners)); }
+    });
+    DB.ref('config/finalPublished').on('value', snap=>{
+      const v=snap.val();
+      if(v!==null){
+        localStorage.setItem('finalPublished',String(v));
+        renderFinalBoard();
+        // 관리자 버튼 상태 갱신
+        const btn=document.getElementById('final-publish-btn');
+        if(btn){ btn.textContent=v?'📣 공개 중':'⏸ 비공개'; btn.className='lock-btn '+(v?'open':'closed'); }
+      }
+    });
+    DB.ref('finalRanking').on('value', snap=>{
+      const d=snap.val();
+      if(d){ localStorage.setItem('finalRanking',JSON.stringify(d)); renderFinalBoard(); }
+    });
+  }catch(e){
+    console.error('Firebase 초기화 오류:', e);
+    const el=document.getElementById('fb-status');
+    if(el){ el.textContent='🔴 Firebase 오류: '+e.message; el.style.color='var(--red)'; }
+  }
+}
+const fbSet=(p,d)=>DB?DB.ref(p).set(d):Promise.resolve();
+const fbGet=(p)=>DB?DB.ref(p).get().then(s=>s.val()):Promise.resolve(null);
+
+// ─── 카드 토글 ───
+function toggleCard(id){
+  const b=document.getElementById(id),c=document.getElementById('cv-'+id);
+  const open=!b.classList.contains('collapsed');
+  b.classList.toggle('collapsed',open); if(c) c.classList.toggle('open',!open);
+}
+
+// ─── 관리자 탭 ───
+function switchAdminTab(name){
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>{
+    const names=['predict','inning','rank','setup'];
+    t.classList.toggle('active',names[i]===name);
+  });
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ap-'+name).classList.add('active');
+  if(name==='inning') renderInningCombinedGrid();
+  if(name==='rank') loadAdminRank();
+  if(name==='predict') loadRegStats();
+}
+
+function updateLockUI(){
+  const locked=isLocked();
+  const btn=document.getElementById('lock-btn-game');
+  const st=document.getElementById('lock-status-game');
+  const sub=document.getElementById('lock-status-game-sub');
+  if(btn){
+    btn.textContent=locked?'🔒 마감':'🔓 열림';
+    btn.className='lock-btn '+(locked?'closed':'open');
+  }
+  if(st){ st.textContent=locked?'⛔ 접수 마감 상태입니다':'✅ 접수 중'; st.style.color=locked?'var(--red)':'var(--success)'; }
+  if(sub){ sub.textContent=locked?'수동 마감 또는 자동 마감(19:00)':'자동 마감: 7/16 19:00 KST'; }
+
+  ['score','hr'].forEach(key=>{
+    const badge=document.getElementById('badge-'+key);
+    if(!badge) return;
+    if(locked){ badge.textContent='마감'; badge.className='cbadge cb-locked'; }
+    else { badge.textContent='~19시까지'; badge.className='cbadge cb-pre'; }
+  });
+
+  // 마감/열림에 따라 blocked-box 토글 (innerHTML 덮어쓰기 금지)
+  const scBlocked=document.getElementById('score-blocked');
+  const hrBlocked=document.getElementById('hr-blocked');
+  const scForm=document.getElementById('score-form');
+  const hrForm=document.getElementById('hr-form');
+  const succSc=document.getElementById('succ-score');
+  const succHr=document.getElementById('succ-hr');
+
+  if(scBlocked && scForm && succSc){
+    if(locked && !succSc.classList.contains('show')){
+      scBlocked.style.display='block'; scForm.style.display='none';
+    } else {
+      scBlocked.style.display='none';
+      if(!succSc.classList.contains('show')) scForm.style.display='block';
+    }
+  }
+  if(hrBlocked && hrForm && succHr){
+    if(locked && !succHr.classList.contains('show')){
+      hrBlocked.style.display='block'; hrForm.style.display='none';
+    } else {
+      hrBlocked.style.display='none';
+      if(!succHr.classList.contains('show')) hrForm.style.display='block';
+    }
+  }
+}
+
+// ─── 이닝 회차별 마감 그리드 렌더 ───
+function renderInningCombinedGrid(){
+  const grid=document.getElementById('inning-combined-grid');
+  if(!grid) return;
+  const publishedResults=JSON.parse(localStorage.getItem('publishedResults')||'{}');
+  grid.innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>{
+    const locked=!!INNING_LOCK[n];
+    const isPrize=n<=PRIZE_INNINGS;
+    const hasResult=inningResults[n]!==undefined;
+    const isPublished=publishedResults[String(n)]===true;
+    const boardData=JSON.parse(localStorage.getItem('prizeBoardData')||'{}');
+    const bd=boardData[n];
+
+    let resultSection='';
+    if(hasResult){
+      // 결과 있음 - 수정 or 공개 버튼
+      const prizeHTML=bd?buildPrizeHTML(bd,isPrize):'';
+      resultSection=`
+        <div style="background:#fff;border-radius:8px;padding:10px 12px;margin-top:6px;border:.5px solid var(--line);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:12px;font-weight:700;color:var(--success);">✅ 정답: ${inningResults[n]}점</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="resetInningResult(${n})" style="font-size:11px;padding:3px 8px;border-radius:5px;border:.5px solid var(--line);background:#f9f9f9;color:var(--text3);cursor:pointer;font-family:inherit;">수정</button>
+              <button onclick="togglePublish(${n})" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;border:none;cursor:pointer;font-family:inherit;background:${isPublished?'rgba(200,16,46,.1)':'rgba(22,163,74,.12)'};color:${isPublished?'var(--red)':'var(--success)'};">
+                ${isPublished?'공개 취소':'결과 공개'}
+              </button>
+            </div>
+          </div>
+          ${prizeHTML}
+          ${isPublished?'<div style="font-size:11px;color:var(--success);margin-top:6px;">📣 참가자에게 공개됨</div>':'<div style="font-size:11px;color:var(--text3);margin-top:6px;">⏸ 미공개 (결과 공개 버튼으로 공개)</div>'}
+        </div>`;
+    } else {
+      // 결과 없음 - 입력 UI
+      resultSection=`
+        <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+          <select id="ires-${n}" style="flex:1;padding:6px 8px;border:.5px solid rgba(0,0,0,.12);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:var(--text);outline:none;">
+            <option value="">득점 선택</option>
+            <option value="0">0점</option><option value="1">1점</option><option value="2">2점</option>
+            <option value="3">3점</option><option value="4">4점</option><option value="5+">5점+</option>
+          </select>
+          <button onclick="submitInningFromGrid(${n})" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;background:var(--gold);color:var(--navy);font-family:inherit;flex-shrink:0;">처리</button>
+        </div>`;
+    }
+
+    return `<div style="background:#f9f9f9;border-radius:10px;padding:10px 12px;margin-bottom:6px;border:.5px solid var(--line);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;font-weight:700;color:var(--text);min-width:40px;">${n}회${isPrize?' 🎁':''}</span>
+        <button class="ili-btn ${locked?'closed':'open'}" onclick="toggleInningLock(${n})" style="flex-shrink:0;">
+          ${locked?'🔒 마감':'🔓 열림'}
+        </button>
+      </div>
+      ${resultSection}
+    </div>`;
+  }).join('');
+}
+
+// 경품 결과 HTML 생성
+function buildPrizeHTML(bd, isPrize){
+  const allCount=bd.all?bd.all.length:0;
+  if(allCount===0) return '<div style="font-size:12px;color:var(--text3);">정답자 없음</div>';
+
+  const nameTag = p=>`<span style="font-size:11px;background:rgba(13,31,60,.06);color:var(--navy2);border-radius:4px;padding:2px 7px;margin:2px 2px 0 0;display:inline-block;">${p.d2||''} ${p.name}</span>`;
+  let html=`<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">✅ 전체 정답자 ${allCount}명</div><div style="margin-bottom:6px;">${bd.all.map(nameTag).join('')}</div>`;
+
+  if(!isPrize){
+    html+=`<div style="font-size:11px;color:var(--text3);">6~9회 — 포인트 +1 지급, 경품 없음</div>`;
+    return html;
+  }
+
+  const winners=bd.winners||[], already=bd.already||[], missed=bd.missed||[];
+  if(winners.length>0){
+    const label=bd.isDraw?'🎰 추첨 경품 수령자':'🎁 경품 수령자';
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--success);margin-top:4px;">${label} ${winners.length}명</div>`;
+    html+=winners.map(p=>`<div style="font-size:12px;font-weight:700;color:var(--navy2);padding:2px 0;">🎁 ${p.d2||''} ${p.name}</div>`).join('');
+  }
+  if(missed.length>0){
+    html+=`<div style="font-size:11px;color:var(--text3);margin-top:4px;">🎰 추첨 낙첨: ${missed.map(p=>p.name).join(', ')} (다음 기회에!)</div>`;
+  }
+  if(already.length>0){
+    html+=`<div style="font-size:11px;color:var(--text3);margin-top:4px;">${already.map(p=>p.name).join(', ')}님은 이전 회차에서 이미 경품을 받으셨어요!</div>`;
+  }
+  if(winners.length===0 && already.length===0 && missed.length===0){
+    html+=`<div style="font-size:11px;color:var(--text3);margin-top:4px;">경품 수령 가능한 정답자 없음</div>`;
+  }
+  return html;
+}
+
+// 결과 공개/비공개 토글
+function togglePublish(n){
+  const publishedResults=JSON.parse(localStorage.getItem('publishedResults')||'{}');
+  const key=String(n);
+  // 명시적 true/false 저장 (undefined→false 버그 방지)
+  publishedResults[key] = !publishedResults[key];
+  localStorage.setItem('publishedResults',JSON.stringify(publishedResults));
+  if(DB) fbSet('config/publishedResults/'+key, publishedResults[key]);
+  renderInningCombinedGrid();
+  renderPrizeBoard();
+}
+
+// 결과 수정 (초기화)
+async function resetInningResult(n){
+  if(!confirm(n+'회 결과를 수정하시겠습니까?\n기존 지급된 포인트와 추첨 당첨 이력이 함께 초기화됩니다.')) return;
+
+  // 이전에 지급된 포인트 정확히 회수 (최종합산 + 이닝전용 누적 둘 다)
+  await reversePoints('pointsLog/inning/'+n);
+  await reversePoints('inningPointsLog/'+n, 'inningPoints');
+
+  // 이번 회차 경품 당첨자를 추첨 대상 명단으로 복귀
+  const bd=JSON.parse(localStorage.getItem('prizeBoardData')||'{}');
+  const prevWinners=(bd[n]&&bd[n].winners)?bd[n].winners:[];
+  prevWinners.forEach(w=>{
+    const idx=prizeWinners.indexOf(w.name+'_'+w.d2);
+    if(idx>-1) prizeWinners.splice(idx,1);
+  });
+  localStorage.setItem('prizeWinners',JSON.stringify(prizeWinners));
+  if(DB) fbSet('config/prizeWinners', prizeWinners);
+
+  // inningResults에서 제거
+  delete inningResults[n];
+  localStorage.setItem('inningResults', JSON.stringify(inningResults));
+  if(DB) DB.ref('inningResults/'+n).remove();
+
+  // prizeBoardData에서 제거
+  delete bd[n];
+  localStorage.setItem('prizeBoardData', JSON.stringify(bd));
+  if(DB) DB.ref('prizeBoardData/'+n).remove();
+
+  // publishedResults에서 제거
+  const pub=JSON.parse(localStorage.getItem('publishedResults')||'{}');
+  delete pub[n];
+  localStorage.setItem('publishedResults', JSON.stringify(pub));
+  if(DB) DB.ref('config/publishedResults/'+n).remove();
+
+  refreshInningTabs();
+  renderInningCombinedGrid();
+  renderPrizeBoard();
+  alert(n+'회 결과가 초기화되었습니다. 다시 입력해주세요.');
+}
+
+// 이닝 그리드 처리 버튼
+async function submitInningFromGrid(n){
+  const sel=document.getElementById('ires-'+n);
+  if(!sel||!sel.value){alert('득점을 선택해주세요!');return;}
+  const btn=sel.nextElementSibling;
+  if(btn){ btn.disabled=true; btn.textContent='처리 중...'; }
+  sel.disabled=true;
+  await processInningResultDirect(String(n), sel.value);
+  renderInningCombinedGrid();
+}
+
+function toggleInningLock(n){
+  INNING_LOCK[n]=!INNING_LOCK[n];
+  localStorage.setItem('inning_lock',JSON.stringify(INNING_LOCK));
+  if(DB) fbSet('config/inning_lock/'+n, INNING_LOCK[n]);
+  renderInningCombinedGrid();
+  updateInningBetUI();
+}
+
+// 참가자 화면 - 현재 이닝 베팅 버튼 상태 갱신
+function updateInningBetUI(){
+  if(!document.getElementById('page-game').classList.contains('active')) return;
+  updateInningView();
+}
+function doRegister(){
+  const d1=document.getElementById('r-d1').value,d2=document.getElementById('r-d2').value;
+  const name=document.getElementById('r-name').value.trim();
+  const code=document.getElementById('r-code').value.trim();
+  if(!d1||!d2||!name){alert('담당, 부서, 이름을 모두 입력해주세요!');return;}
+  if(code.toUpperCase()!==VERIFY_CODE.toUpperCase()){alert('현장 인증 코드가 올바르지 않습니다.\n경기 시작 직전 단톡방을 확인해주세요!');return;}
+  // uid를 이름+부서 고정값으로 생성 → 같은 사람이 재등록해도 동일 인물로 인식(중복 등록/중복 제출 방지)
+  user={d1,d2,name,uid:sanitize(name+'_'+d2)};
+  sessionStorage.setItem('user',JSON.stringify(user));
+  if(DB) fbSet('participants/'+sanitize(user.uid),{d1,d2,name,ts:Date.now()});
+  showGamePage();
+}
+function sanitize(s){return s.replace(/[.#$\[\]\/\s]/g,'_');}
+
+// ─── 담당/부서/이름 잘못 입력한 경우 등록 화면으로 되돌아가기 ───
+// (세션의 진행 상태만 초기화 — Firebase에 이미 저장된 이전 제출 기록은 그대로 남아있음)
+function editMyInfo(){
+  if(!confirm('담당/부서/이름을 다시 입력하시겠어요?\n\n※ 잘못 입력했던 예전 정보로 제출했던 기록은 서버에 그대로 남아있을 수 있어요.\n정확한 정보로 다시 등록해주세요.')) return;
+  sessionStorage.removeItem('user');
+  sessionStorage.removeItem('submitted_score');
+  sessionStorage.removeItem('submitted_hr');
+  sessionStorage.removeItem('inningBets');
+  Object.keys(inningBets).forEach(k=>delete inningBets[k]);
+  user=null;
+  document.getElementById('page-game').classList.remove('active');
+  document.getElementById('page-register').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+async function showGamePage(){
+  if(!user) return;
+  document.getElementById('badge-name').textContent=user.name;
+  document.getElementById('badge-dept').textContent=user.d1+' / '+user.d2;
+  document.getElementById('page-register').classList.remove('active');
+  document.getElementById('page-game').classList.add('active');
+  window.scrollTo(0,0);
+  // 세션이 끊겼다가 같은 사람이 재등록한 경우를 대비해, 서버(Firebase)에 이미 저장된
+  // 내 제출 기록을 조회해 로컬 상태(sessionStorage)에 복원 — 화면이 "처음처럼" 보이는 것 방지
+  await syncSubmissionsFromServer();
+  updateLockUI();
+  updateInningBetUI();
+  restoreSubmissions();
+  refreshInningTabs();
+  updateInningView();
+  renderPrizeBoard();
+}
+
+// ─── 서버 기준 내 제출 기록 복원 ───
+async function syncSubmissionsFromServer(){
+  if(!DB || !user) return;
+  try{
+    const uidKey=sanitize(user.uid);
+    const [sc,hr,inn]=await Promise.all([
+      fbGet('submissions/score/'+uidKey),
+      fbGet('submissions/homerun/'+uidKey),
+      fbGet('submissions/inning/'+uidKey)
+    ]);
+    if(sc && sc.value!==undefined) sessionStorage.setItem('submitted_score', sc.value);
+    if(hr && hr.value!==undefined) sessionStorage.setItem('submitted_hr', String(hr.value));
+    if(inn){
+      Object.keys(inn).forEach(k=>{
+        if(inn[k] && inn[k].value!==undefined) inningBets[k]=inn[k].value;
+      });
+      sessionStorage.setItem('inningBets', JSON.stringify(inningBets));
+    }
+  }catch(e){
+    console.error('제출 기록 복원 실패:', e);
+  }
+}
+
+// ─── 이전 제출 복원 ───
+function restoreSubmissions(){
+  const savedScore=sessionStorage.getItem('submitted_score');
+  const savedHr=sessionStorage.getItem('submitted_hr');
+  if(savedScore){
+    const sf=document.getElementById('score-form'); if(sf) sf.style.display='none';
+    const parts=savedScore.split(':');
+    document.getElementById('succ-score-txt').textContent='KT '+parts[1]+' : LG '+parts[0]+' 예측 완료!';
+    document.getElementById('succ-score').classList.add('show');
+    showPreview('preview-score','KT '+parts[1]+':LG '+parts[0]+' 예측 완료!');
+  }
+  if(savedHr){
+    const hf=document.getElementById('hr-form'); if(hf) hf.style.display='none';
+    document.getElementById('succ-hr-txt').textContent=savedHr+'개 홈런 예측 완료!';
+    document.getElementById('succ-hr').classList.add('show');
+    showPreview('preview-hr',savedHr+'개 홈런 예측 완료!');
+  }
+}
+function showPreview(id,txt){
+  const el=document.getElementById(id);
+  if(el){el.textContent=txt;el.classList.add('show');}
+  const badgeKey=id.replace('preview-','badge-');
+  const badge=document.getElementById(badgeKey);
+  if(badge) badge.style.display='none';
+}
+
+// ─── 점수 맞추기 ───
+function subScore(){
+  if(isLocked()){alert('접수가 마감되었습니다.');return;}
+  const lg=document.getElementById('g-slg').value,opp=document.getElementById('g-sopp').value;
+  if(lg===''||opp===''){alert('점수를 모두 입력해주세요!');return;}
+  const val=lg+':'+opp;
+  if(DB) fbSet('submissions/score/'+sanitize(user.uid),{name:user.name,d1:user.d1,d2:user.d2,value:val,ts:Date.now()});
+  sessionStorage.setItem('submitted_score',val);
+  const sf=document.getElementById('score-form'); if(sf) sf.style.display='none';
+  document.getElementById('succ-score-txt').textContent = 'KT ' + opp + ' : LG ' + lg + ' 예측 완료!';
+  document.getElementById('succ-score').classList.add('show');
+  showPreview('preview-score', 'KT '+opp+':LG '+lg+' 예측 완료!');
+}
+
+// ─── 홈런 예측 ───
+function selHR(btn,v){document.querySelectorAll('.hropt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');selHRv=v;}
+function subHR(){
+  if(isLocked()){alert('접수가 마감되었습니다.');return;}
+  if(selHRv===null){alert('홈런 수를 선택해주세요!');return;}
+  if(DB) fbSet('submissions/homerun/'+sanitize(user.uid),{name:user.name,d1:user.d1,d2:user.d2,value:selHRv,ts:Date.now()});
+  sessionStorage.setItem('submitted_hr',selHRv);
+  const hf=document.getElementById('hr-form'); if(hf) hf.style.display='none';
+  document.getElementById('succ-hr-txt').textContent = selHRv + '개 홈런 예측 완료!';
+  document.getElementById('succ-hr').classList.add('show');
+  showPreview('preview-hr', selHRv + '개 홈런 예측 완료!');
+}
+
+// ─── 이닝 베팅 ───
+function refreshInningTabs(){
+  document.querySelectorAll('.itab').forEach((tab,i)=>{
+    const n=i+1;
+    tab.classList.remove('done','result-correct','result-wrong');
+    if(inningBets[n]!==undefined) tab.classList.add('done');
+    if(inningResults[n]!==undefined){
+      const myBet=inningBets[n];
+      if(myBet!==undefined){
+        tab.classList.add(String(myBet)===String(inningResults[n])?'result-correct':'result-wrong');
+      }
+    }
+  });
+}
+
+function updateInningView(){
+  const n=curInning;
+  const betArea=document.getElementById('inning-bet-area');
+  const resultView=document.getElementById('inning-result-view');
+  const myBet=inningBets[n];
+  const resultVal=inningResults[n];
+  const locked=isInningLocked(n);
+
+  // 질문 텍스트: 마감이면 마감 메시지, 아니면 기본 문구
+  const qEl=document.getElementById('inning-q');
+  if(qEl){
+    qEl.innerHTML = locked
+      ? `<span style="color:var(--red);font-weight:700;">🔒 ${n}회 베팅 마감</span>`
+      : `${n}회 말, LG TWINS가 얼마나 득점 할까요?`;
+  }
+
+  if(myBet!==undefined){
+    document.getElementById('succ-inning-txt').textContent=n+'회 '+myBet+'점 베팅 완료!';
+    document.getElementById('succ-inning').classList.add('show');
+    document.querySelectorAll('.sopt').forEach(b=>b.classList.remove('sel'));
+    document.querySelectorAll('.sopt').forEach(b=>{
+      if(String(b.querySelector('.sv').textContent)===String(myBet)) b.classList.add('sel');
+    });
+    const submitBtn=document.getElementById('btn-inning-submit');
+    if(resultVal!==undefined){
+      // 결과가 이미 발표됨 → 확정, 수정 불가
+      submitBtn.style.display='none';
+      document.querySelectorAll('.sopt').forEach(b=>{b.disabled=true;});
+      resultView.style.display='block';
+      document.getElementById('irp-title').textContent=n+'회 결과';
+      const correct=String(myBet)===String(resultVal);
+      document.getElementById('irp-rows').innerHTML=`
+        <div class="irp-row">정답: <b>${resultVal}점</b></div>
+        <div class="irp-row">내 예측: <b>${myBet}점</b> → <span class="${correct?'irp-correct':'irp-wrong'}">${correct?'✅ 정답!':'❌ 오답'}</span></div>
+      `;
+      betArea.style.display='none';
+    } else if(locked){
+      // 마감됨(결과 미발표) → 베팅 확정, 수정 불가
+      submitBtn.style.display='none';
+      document.querySelectorAll('.sopt').forEach(b=>{b.disabled=true;});
+      resultView.style.display='none';
+      betArea.style.display='block';
+    } else {
+      // 아직 열려있음 → 마감 전까지 베팅 수정 가능
+      submitBtn.style.display='block';
+      submitBtn.disabled=false;
+      submitBtn.textContent=n+'회 베팅 수정';
+      document.querySelectorAll('.sopt').forEach(b=>{b.disabled=false;});
+      resultView.style.display='none';
+      betArea.style.display='block';
+    }
+  } else {
+    document.getElementById('succ-inning').classList.remove('show');
+    if(resultVal!==undefined){
+      // 베팅을 하지 않았는데 결과가 이미 공개된 경우 → 미선택 오답 처리
+      resultView.style.display='block';
+      document.getElementById('irp-title').textContent=n+'회 결과';
+      document.getElementById('irp-rows').innerHTML=`
+        <div class="irp-row">정답: <b>${resultVal}점</b></div>
+        <div class="irp-row">내 예측: <b>미선택</b> → <span class="irp-wrong">❌ 오답 (베팅 안 함)</span></div>
+      `;
+      document.getElementById('btn-inning-submit').style.display='none';
+      betArea.style.display='none';
+      return;
+    }
+    const submitBtn=document.getElementById('btn-inning-submit');
+    submitBtn.style.display='block';
+    if(locked){
+      submitBtn.disabled=true;
+      submitBtn.textContent='🔒 '+n+'회 베팅 마감';
+      document.querySelectorAll('.sopt').forEach(b=>{b.classList.remove('sel');b.disabled=true;});
+    } else {
+      submitBtn.disabled=false;
+      submitBtn.textContent='이번 회 베팅';
+      document.querySelectorAll('.sopt').forEach(b=>{b.classList.remove('sel');b.disabled=false;});
+    }
+    betArea.style.display='block';
+    resultView.style.display='none';
+  }
+}
+function selIn(tab,n){
+  document.querySelectorAll('.itab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  curInning=n; selInningScore=null;
+  updateInningView();
+  renderPrizeBoard();
+}
+function selScore(btn,v){
+  if(isInningLocked(curInning)) return; // 마감되면 선택 변경 불가
+  document.querySelectorAll('.sopt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); selInningScore=v;
+}
+function subInning(){
+  if(isInningLocked(curInning)){alert(curInning+'회 베팅이 마감되었습니다.');return;}
+  if(selInningScore===null){alert('득점 수를 선택해주세요!');return;}
+  // 마감 전까지는 재제출 시 이전 베팅을 덮어씀 (수정 허용)
+  inningBets[curInning]=selInningScore;
+  sessionStorage.setItem('inningBets',JSON.stringify(inningBets));
+  if(DB) fbSet('submissions/inning/'+sanitize(user.uid)+'/'+String(curInning),
+    {name:user.name,d1:user.d1,d2:user.d2,inning:String(curInning),value:String(selInningScore),ts:Date.now()});
+  // 베팅 자체는 0점, 이닝 종료 후 관리자가 정답 처리 시에만 포인트 지급
+  refreshInningTabs();
+  updateInningView();
+}
+
+// ─── 포인트: 이름+부서 기준 안정 키 ───
+function pointsKey(name,d2){ return sanitize(name+'_'+d2); }
+
+// ─── 포인트 지급 (정답자에게만) + 지급 로그 기록 — 한 번의 update()로 일괄 반영 ───
+// collection: 'points'(최종 합산, 게임1+2+3) 또는 'inningPoints'(이닝 베팅 전용 누적)
+async function awardPoints(entries, logPath, collection='points'){
+  if(!DB) return;
+  if(!entries||entries.length===0){ if(logPath) await fbSet(logPath,null); return; }
+  const pointsSnap = await fbGet(collection) || {};
+  const log={}, updates={};
+  for(const e of entries){
+    const key=pointsKey(e.name,e.d2);
+    const cur=pointsSnap[key]||{name:e.name,d1:e.d1,d2:e.d2,total:0};
+    cur.total=(cur.total||0)+e.pts;
+    pointsSnap[key]=cur;
+    updates[collection+'/'+key]=cur;
+    log[key]=(log[key]||0)+e.pts;
+  }
+  if(logPath) updates[logPath]=log;
+  await DB.ref().update(updates);
+}
+
+// ─── 포인트 회수 (관리자가 결과를 수정/재처리할 때, 이전 지급분을 정확히 되돌림) — 일괄 반영 ───
+async function reversePoints(logPath, collection='points'){
+  if(!DB) return;
+  const log=await fbGet(logPath);
+  if(!log) return;
+  const pointsSnap = await fbGet(collection) || {};
+  const updates={};
+  for(const key of Object.keys(log)){
+    if(pointsSnap[key]) updates[collection+'/'+key+'/total']=(pointsSnap[key].total||0)-log[key];
+  }
+  updates[logPath]=null;
+  await DB.ref().update(updates);
+}
+
+// ─── 리더보드 실시간 ───
+function listenLeaderboard(){
+  const lb=document.getElementById('leaderboard');
+  if(!DB){
+    if(lb) lb.innerHTML='<div style="font-size:12px;color:var(--text3);text-align:center;padding:9px 0;">베팅 참여 후 순위가 표시됩니다</div>';
+    return;
+  }
+  DB.ref('inningPoints').on('value',snap=>{
+    const d=snap.val();
+    if(!d){
+      if(lb) lb.innerHTML='<div style="font-size:12px;color:var(--text3);text-align:center;padding:9px 0;">베팅 참여 후 순위가 표시됩니다</div>';
+      return;
+    }
+    const arr=Object.values(d).sort((a,b)=>b.total-a.total).slice(0,8);
+    if(lb) lb.innerHTML=arr.map((l,i)=>`
+      <div class="lb-row">
+        <span class="lb-rk">${['🥇','🥈','🥉','4','5','6','7','8'][i]||i+1}</span>
+        <span class="lb-nm">${l.name} <span class="lb-dept-tag">${l.d2||''}</span></span>
+        <span class="lb-sc">${l.total}점</span>
+      </div>`).join('');
+  });
+}
+
+// ─── 관리자: 잘못 등록된 참가자 삭제 (등록/점수/홈런/이닝베팅 원본 제출기록 제거) ───
+// 이미 지급된 포인트·경품 이력(points/prizeWinners)은 건드리지 않음 — 결과 처리 전 정리용
+async function deleteParticipant(key,name){
+  if(!DB) return;
+  if(!confirm(name+' 님의 등록 정보를 삭제할까요?\n(등록·점수·홈런·이닝베팅 제출기록이 삭제됩니다. 이미 처리된 포인트/경품 이력은 유지됩니다)')) return;
+  await DB.ref().update({
+    ['participants/'+key]:null,
+    ['submissions/score/'+key]:null,
+    ['submissions/homerun/'+key]:null,
+    ['submissions/inning/'+key]:null
+  });
+  loadRegStats();
+}
+
+
+// ─── 관리자: 등록현황 ───
+async function loadRegStats(){
+  if(!DB){
+    document.getElementById('stat-total').textContent='?';
+    document.getElementById('stat-score').textContent='?';
+    document.getElementById('stat-hr').textContent='?';
+    document.getElementById('reg-list').innerHTML='<span style="color:var(--text3);">Firebase 연결 후 조회 가능합니다</span>';
+    return;
+  }
+  const [p,s,h]=await Promise.all([
+    fbGet('participants'),fbGet('submissions/score'),fbGet('submissions/homerun')
+  ]);
+  const total=p?Object.keys(p).length:0;
+  const scoreN=s?Object.keys(s).length:0;
+  const hrN=h?Object.keys(h).length:0;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-score').textContent=scoreN;
+  document.getElementById('stat-hr').textContent=hrN;
+  // 담당(부서)별 그룹핑 — 한눈에 현황 파악 + 클릭 시 명단 펼침
+  const groups={};
+  if(p) Object.entries(p).forEach(([k,v])=>{
+    v._key=k;
+    const key=v.d1||'미지정';
+    (groups[key]=groups[key]||[]).push(v);
+  });
+  const d1Order=Object.keys(DEPT_MAP);
+  // 참가자 키 기준으로 점수/홈런 제출 여부 O/X 표시 (등록 시 생성된 uid를 그대로 제출 키로 사용하므로 키가 일치함)
+  const mark=(map,key)=>map&&map[key]!==undefined
+    ?'<span style="color:var(--success);font-weight:700;">O</span>'
+    :'<span style="color:var(--text3);">X</span>';
+  let html=d1Order.map(d1=>{
+    const list=(groups[d1]||[]).sort((a,b)=>a.ts-b.ts);
+    const rows=list.length>0
+      ? list.map((v,i)=>`<div class="rank-row"><span style="font-size:12px;min-width:22px;color:var(--text3);">${i+1}</span><span style="flex:1;font-size:12px;">${v.name}</span><span style="font-size:11px;color:var(--text3);margin-right:4px;">${v.d2||''}</span><span style="font-size:10px;color:var(--text3);min-width:44px;text-align:right;margin-right:6px;">점${mark(s,v._key)} 홈${mark(h,v._key)}</span><span onclick="deleteParticipant('${v._key}','${v.name.replace(/'/g,"\\'")}')" style="font-size:13px;color:var(--text3);cursor:pointer;padding:0 2px;flex-shrink:0;">✕</span></div>`).join('')
+      : '<div style="font-size:12px;color:var(--text3);padding:4px 0;">등록자 없음</div>';
+    return `<div class="reg-dept-group">
+      <div class="reg-dept-head" onclick="this.nextElementSibling.classList.toggle('collapsed');this.querySelector('.reg-dept-arrow').classList.toggle('open')">
+        <span class="reg-dept-name">${d1}</span>
+        <span class="reg-dept-count">${list.length}명</span>
+        <span class="reg-dept-arrow">▼</span>
+      </div>
+      <div class="reg-dept-body collapsed">${rows}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('reg-list').innerHTML=html||'<span style="color:var(--text3);">등록자 없음</span>';
+}
+
+// ─── 관리자: 이닝 결과 처리 (직접 호출) ───
+async function processInningResultDirect(inningNum, result){
+  const isPrize=parseInt(inningNum)<=PRIZE_INNINGS;
+  // prize-result-area는 관리자 탭2 안에만 있으므로 null 체크 유지
+  const area=document.getElementById('prize-result-area');
+  if(area) area.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0;">처리 중...</div>';
+
+  // ── 1. 결과 저장 (localStorage + Firebase)
+  inningResults[inningNum]=result;
+  localStorage.setItem('inningResults',JSON.stringify(inningResults));
+  if(DB) fbSet('inningResults/'+inningNum,result);
+  refreshInningTabs();
+  if(String(curInning)===String(inningNum)) updateInningView();
+
+  // ── 2. 베팅 데이터 수집 (Firebase 연결 여부 무관하게 처리)
+  let allBets=null;
+  if(DB) allBets=await fbGet('submissions/inning');
+
+  const correct=[];
+  if(allBets){
+    Object.values(allBets).forEach(userBets=>{
+      const bet=userBets[String(inningNum)];
+      if(bet&&String(bet.value)===String(result)) correct.push(bet);
+    });
+  }
+
+  // ── 3. 포인트 지급 (재처리 시 이전 지급분 회수 후 재지급 → 중복지급 방지)
+  // points: 최종 순위(게임1+2+3 합산)용, inningPoints: 이닝 베팅 전용 누적 리더보드용
+  await reversePoints('pointsLog/inning/'+inningNum);
+  await reversePoints('inningPointsLog/'+inningNum, 'inningPoints');
+  const correctEntries=correct.map(c=>({name:c.name,d1:c.d1,d2:c.d2,pts:1}));
+  await awardPoints(correctEntries, 'pointsLog/inning/'+inningNum);
+  await awardPoints(correctEntries, 'inningPointsLog/'+inningNum, 'inningPoints');
+
+  // ── 4. 경품/추첨 결과 계산
+  // eligible: 이번 회차 정답자 중 아직 경품 미수령자 / already: 이전 회차에 이미 경품을 받은 사람
+  const eligible=isPrize ? correct.filter(c=>!prizeWinners.includes(c.name+'_'+c.d2)) : [];
+  const already=isPrize ? correct.filter(c=>prizeWinners.includes(c.name+'_'+c.d2)) : [];
+  let thisRoundWinners=[], missedList=[];
+
+  let html=`<div class="prize-result"><div class="pr-title">${inningNum}회 결과: ${result}점 · 전체 정답자 ${correct.length}명</div>`;
+
+  // 전체 정답자 목록은 항상 표시
+  if(correct.length>0){
+    html+=`<div class="pr-row" style="font-size:11px;color:var(--text3);padding-bottom:4px;">✅ 전체 정답자</div>`;
+    html+=correct.map(c=>`<div class="pr-row" style="font-size:12px;">${c.name} <span style="color:var(--text3);font-size:11px;">(${c.d2})</span></div>`).join('');
+    html+='<div style="height:6px;"></div>';
+  } else {
+    html+='<div class="pr-row" style="color:var(--text3);">정답자 없음</div>';
+  }
+
+  if(!isPrize){
+    // 6~9회: 경품 없음, 포인트만
+    html+=`<div class="pr-row" style="color:var(--text3);font-size:11px;border-top:.5px solid var(--line);padding-top:6px;">6~9회: 경품 없음 · 이닝 정답 포인트 +1 지급</div>`;
+  } else if(eligible.length===0){
+    if(already.length>0){
+      html+=`<div class="pr-row" style="color:var(--text3);font-size:11px;border-top:.5px solid var(--line);padding-top:6px;">${already.map(c=>c.name).join(', ')}님은 이전 회차에서 이미 경품을 받으셨어요!</div>`;
+    }
+  } else if(eligible.length<5){
+    // 5명 미만: 전원 경품
+    html+=`<div class="pr-row" style="font-weight:700;border-top:.5px solid var(--line);padding-top:6px;">🎁 경품 수령자 ${eligible.length}명</div>`;
+    eligible.forEach(c=>{
+      html+=`<div class="pr-row"><span class="pr-win">🎁 ${c.name}</span> <span style="font-size:11px;color:var(--text3);">(${c.d2})</span></div>`;
+      prizeWinners.push(c.name+'_'+c.d2);
+      thisRoundWinners.push(c);
+    });
+    if(already.length>0){
+      html+=`<div class="pr-row" style="font-size:11px;color:var(--text3);">${already.map(c=>c.name).join(', ')}님은 이전 회차에서 이미 경품을 받으셨어요!</div>`;
+    }
+  } else {
+    // 5명 이상: 추첨으로 5명 선정
+    const shuffled=[...eligible].sort(()=>Math.random()-.5);
+    thisRoundWinners=shuffled.slice(0,5);
+    missedList=shuffled.slice(5);
+    html+=`<div class="pr-row" style="font-weight:700;border-top:.5px solid var(--line);padding-top:6px;">🎰 경품 대상 ${eligible.length}명 중 추첨 → 당첨자 5명</div>`;
+    thisRoundWinners.forEach(c=>{
+      html+=`<div class="pr-row"><span class="pr-win">🏆 ${c.name}</span> <span style="font-size:11px;color:var(--text3);">(${c.d2})</span></div>`;
+      prizeWinners.push(c.name+'_'+c.d2);
+    });
+    if(missedList.length>0){
+      html+=`<div class="pr-row" style="color:var(--text3);font-size:11px;">낙첨: ${missedList.map(c=>c.name).join(', ')} (다음 기회에!)</div>`;
+    }
+    if(already.length>0){
+      html+=`<div class="pr-row" style="font-size:11px;color:var(--text3);">${already.map(c=>c.name).join(', ')}님은 이전 회차에서 이미 경품을 받으셨어요!</div>`;
+    }
+  }
+  html+='</div>';
+
+  // ── 5. 결과 표시 (탭2 안에 있을 때만, 없어도 오류 없음)
+  if(area) area.innerHTML=html;
+  localStorage.setItem('prizeWinners',JSON.stringify(prizeWinners));
+  if(DB) fbSet('config/prizeWinners', prizeWinners);
+
+  // ── 6. prizeBoardData 저장 (참가자 화면 정답자 결과 칸용)
+  const boardData=JSON.parse(localStorage.getItem('prizeBoardData')||'{}');
+  const inningKey=String(inningNum);
+  boardData[inningKey]={
+    inning:inningNum,
+    ans:result,
+    isPrize,
+    all:correct.map(c=>({name:c.name,d1:c.d1,d2:c.d2})),         // 전체 정답자
+    winners:thisRoundWinners.map(c=>({name:c.name,d1:c.d1,d2:c.d2})), // 이번 회 경품 수령자
+    already:already.map(c=>({name:c.name,d1:c.d1,d2:c.d2})),     // 이전 회차에 이미 경품 받은 사람
+    missed:missedList.map(c=>({name:c.name,d1:c.d1,d2:c.d2})),   // 추첨 낙첨자
+    isDraw:eligible.length>=5
+  };
+  localStorage.setItem('prizeBoardData',JSON.stringify(boardData));
+  if(DB) fbSet('prizeBoardData/'+inningKey,boardData[inningKey]);
+
+  // ── 6-1. 처리 즉시 자동 공개 (참가자 화면에 바로 반영, 수동 클릭 누락 방지)
+  const pubMap=JSON.parse(localStorage.getItem('publishedResults')||'{}');
+  pubMap[inningKey]=true;
+  localStorage.setItem('publishedResults',JSON.stringify(pubMap));
+  if(DB) fbSet('config/publishedResults/'+inningKey, true);
+
+  // ── 7. 관리자 이닝 그리드 갱신 (처리 후 즉시 결과 표시)
+  renderInningCombinedGrid();
+  renderPrizeBoard();
+}
+
+// ─── 참가자 화면: 정답자 결과 board (현재 선택된 회차만 표시) ───
+function renderPrizeBoard(){
+  const el = document.getElementById('inning-prize-board');
+  if(!el) return;
+  const n = curInning;
+  const boardData = JSON.parse(localStorage.getItem('prizeBoardData')||'{}');
+  const publishedResults = JSON.parse(localStorage.getItem('publishedResults')||'{}');
+  const d = boardData[n];
+
+  if(!d || publishedResults[String(n)]!==true){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:4px 0;">이닝 종료 후 결과가 발표됩니다</div>';
+    return;
+  }
+  const isPrize = n<=5;
+  const pill = p=>`<span class="pbi-person">${p.d2||''} ${p.name}</span>`;
+  const winnerPill = p=>`<span class="pbi-person winner">🎁 ${p.d2||''} ${p.name}</span>`;
+  const allCount = d.all?d.all.length:0;
+
+  if(allCount===0){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);">정답자 없음</div>';
+    return;
+  }
+  if(!isPrize){
+    // 6~9회: 경품 없음, 전체 정답자만 표시 (정답 숫자는 위에 이미 표시되므로 생략)
+    el.innerHTML = `<div class="prize-board-item"><div style="font-size:11px;color:var(--text3);margin-bottom:5px;">전체 정답자 ${allCount}명 · 이닝 포인트 +1</div><div>${(d.all||[]).map(pill).join('')}</div></div>`;
+    return;
+  }
+  const winners = d.winners||[];
+  const already = d.already||[];
+  const missed = d.missed||[];
+  const winnerPills = winners.map(winnerPill).join('');
+
+  let html = `<div class="prize-board-item">`;
+  html += `<div style="font-size:11px;color:var(--text3);margin-bottom:5px;">✅ 전체 정답자 ${allCount}명</div>`;
+  html += `<div style="margin-bottom:8px;">${(d.all||[]).map(pill).join('')}</div>`;
+
+  if(winners.length>0){
+    const label = d.isDraw ? '🎰 추첨 경품 수령자 → 관리자를 찾아주세요!' : '🎁 경품 수령자 → 관리자를 찾아주세요!';
+    html += `<div class="pbi-winner-label${d.isDraw?' draw':''}">${label}</div><div style="margin-bottom:6px;">${winnerPills}</div>`;
+  }
+  if(d.isDraw && missed.length>0){
+    html += `<div style="font-size:12px;color:var(--text3);margin-bottom:4px;">🎰 낙첨: ${missed.map(p=>p.name).join(', ')} (다음 기회에!)</div>`;
+  }
+  if(already.length>0){
+    html += `<div style="font-size:12px;color:var(--text3);">${already.map(p=>p.name).join(', ')}님은 이전 회차에서 이미 경품을 받으셨어요!</div>`;
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+// ─── 관리자: 최종결과 탭 순위 조회 ───
+async function loadAdminRank(){
+  if(!DB){document.getElementById('admin-rank-list').textContent='Firebase 연결 필요';return;}
+  const d=await fbGet('points');
+  if(!d){document.getElementById('admin-rank-list').textContent='데이터 없음';return;}
+  const arr=Object.values(d).sort((a,b)=>b.total-a.total);
+  document.getElementById('admin-rank-list').innerHTML=arr.map((l,i)=>`
+    <div class="rank-row">
+      <span style="font-size:13px;min-width:24px;">${['🥇','🥈','🥉'][i]||i+1}</span>
+      <span style="flex:1;font-size:13px;">${l.name} <span style="font-size:11px;color:var(--text3);">${l.d2||''}</span></span>
+      <span style="font-size:13px;font-weight:700;color:var(--success);">${l.total}점</span>
+    </div>`).join('');
+}
+
+
+// ─── 최종 순위 공개 토글 (관리자) ───
+function toggleFinalPublish(){
+  const pub=localStorage.getItem('finalPublished')==='true';
+  const next=!pub;
+  localStorage.setItem('finalPublished',String(next));
+  if(DB) fbSet('config/finalPublished', next);
+  const btn=document.getElementById('final-publish-btn');
+  if(btn){
+    btn.textContent=next?'📣 공개 중':'⏸ 비공개';
+    btn.className='lock-btn '+(next?'open':'closed');
+  }
+  renderFinalBoard();
+}
+
+// ─── 시상대+순위표 HTML 생성 (참가자 화면 · 관리자 미리보기 공용) ───
+function buildRankingHTML(arr){
+  const top3=arr.slice(0,3);
+  const rest=arr.slice(3,10);
+  const beyond=arr.length>10;
+  // 시상대: 1위(가운데 높게), 2위(왼쪽), 3위(오른쪽) — 올림픽 배치
+  const podiumOrder=[top3[1]||null, top3[0]||null, top3[2]||null];
+  const classes=['silver','gold','bronze'];
+  const labels=['2위','1위','3위'];
+  const medals=['🥈','🥇','🥉'];
+
+  let html='<div class="podium-wrap">';
+  podiumOrder.forEach((p,i)=>{
+    const cls=classes[i],label=labels[i],medal=medals[i];
+    if(!p){ html+=`<div class="podium-slot"><div class="podium-block ${cls}" style="opacity:.25;">${medal}</div></div>`; return; }
+    html+=`
+      <div class="podium-slot">
+        <div class="podium-avatar ${cls}">${medal}</div>
+        <div class="podium-name">${p.name}</div>
+        <div class="podium-dept">${(p.d2||p.d1||'').replace('담당','').replace('/전략구매','')}</div>
+        <div class="podium-score ${cls}">${p.total}점</div>
+        <div class="podium-block ${cls}">${label}</div>
+      </div>`;
+  });
+  html+='</div>';
+
+  if(rest.length>0){
+    html+='<div class="rank-table">';
+    rest.forEach((p,i)=>{
+      html+=`<div class="rank-table-row">
+        <span class="rank-num">${i+4}</span>
+        <span class="rank-nm">${p.name} <span class="rank-dept-sm">${(p.d2||'').replace('담당','')}</span></span>
+        <span class="rank-sc">${p.total}점</span>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  if(beyond) html+='<div class="rank-ellipsis">· · ·</div>';
+  return html;
+}
+
+// ─── 최종 순위 보드 (참가자 화면) ───
+function renderFinalBoard(){
+  const el=document.getElementById('final-board-content');
+  if(!el) return;
+  const pub=localStorage.getItem('finalPublished')==='true';
+  const badge=document.getElementById('badge-final-board');
+
+  if(!pub){
+    el.innerHTML='<div class="final-board-locked"><div class="fbl-icon">🔒</div><div class="fbl-txt">경기 종료 후 최종 결과를 공개합니다!</div></div>';
+    if(badge){badge.textContent='경기 종료 후 공개';badge.style.background='rgba(0,0,0,.06)';badge.style.color='var(--text3)';}
+    return;
+  }
+
+  // Firebase points 데이터로 순위 구성
+  if(!DB){
+    el.innerHTML='<div class="final-board-locked"><div class="fbl-icon">⏳</div><div class="fbl-txt">순위 집계 중입니다</div></div>';
+    return;
+  }
+  if(badge){badge.textContent='공개됨 🏆';badge.style.background='rgba(240,180,41,.14)';badge.style.color='#9a6600';}
+
+  fbGet('finalRanking').then(async ranked=>{
+    let arr=ranked;
+    if(!arr){
+      // finalRanking이 아직 없는 경우(예: 처리 전 상태) — 임시로 총점만으로 정렬해서 보여줌
+      const d=await fbGet('points');
+      if(!d){
+        el.innerHTML='<div class="final-board-locked"><div class="fbl-icon">📭</div><div class="fbl-txt">집계된 데이터가 없습니다</div></div>';
+        return;
+      }
+      arr=Object.values(d).sort((a,b)=>b.total-a.total).map(p=>({...p, key:pointsKey(p.name,p.d2)}));
+    }
+    // Firebase가 배열을 객체로 돌려줄 가능성에 대한 안전장치
+    if(!Array.isArray(arr)) arr=Object.values(arr);
+
+    // 내 점수/순위 카드 (로그인한 참가자 기준)
+    let myHTML='';
+    if(user){
+      const myKey=pointsKey(user.name,user.d2);
+      const myIdx=arr.findIndex(p=>(p&&(p.key||pointsKey(p.name,p.d2)))===myKey);
+      const myScore=myIdx>=0?arr[myIdx].total:0;
+      const myRank=myIdx>=0?(arr[myIdx].rank||myIdx+1):'-';
+      myHTML=`<div class="my-final-score">
+        <div class="mfs-label">🙋 내 최종 기록</div>
+        <div class="mfs-row"><span class="mfs-rank">${myRank}위</span><span class="mfs-score">${myScore}점</span></div>
+      </div>`;
+      if(myIdx<0) console.warn('최종순위에서 내 기록을 못 찾음. myKey=', myKey, 'arr keys=', arr.map(p=>p&&p.key));
+    }
+
+    el.innerHTML = myHTML + buildRankingHTML(arr);
+  }).catch(e=>{
+    console.error('최종 순위 렌더링 실패:', e);
+    el.innerHTML='<div class="final-board-locked"><div class="fbl-icon">⚠️</div><div class="fbl-txt">순위를 불러오는 중 오류가 발생했습니다. 새로고침해주세요.</div></div>';
+  });
+}
+
+// ─── Firebase 실시간: finalPublished 수신 ───
+// ─── 관리자 설정 저장 (인증 코드만 변경 가능, Firebase URL은 고정값) ───
+function saveAdminBase(){
+  const code=document.getElementById('a-code').value.trim().toUpperCase();
+  if(!code||code.length!==4){alert('인증 코드는 4자리로 입력해주세요.');return;}
+  VERIFY_CODE=code;localStorage.setItem('verify_code',code);
+  if(DB) fbSet('config/verify_code', code);
+  alert('✅ 인증코드가 저장되었습니다: '+code);
+}
+// ─── 테스트 데이터 전체 초기화 (등록/제출/포인트/경품/이닝결과/마감상태) ───
+// 인증 코드와 Firebase 주소(FB_URL)는 건드리지 않음
+async function resetAllGameData(){
+  if(!confirm('정말 모든 테스트 데이터를 초기화할까요?\n등록자, 점수/홈런/이닝 베팅 제출, 포인트, 경품 수령 이력, 이닝 결과가 전부 삭제됩니다.\n(인증 코드·Firebase 주소는 유지됩니다)')) return;
+  if(!confirm('되돌릴 수 없습니다. 실제 행사 시작 전에만 사용하세요. 계속할까요?')) return;
+
+  if(DB){
+    await DB.ref().update({
+      participants:null,
+      submissions:null,
+      points:null,
+      inningPoints:null,
+      pointsLog:null,
+      inningPointsLog:null,
+      inningResults:null,
+      prizeBoardData:null,
+      'config/prizeWinners':null,
+      'config/publishedResults':null,
+      'config/finalPublished':null,
+      'config/inning_lock':null,
+      'config/locked':false,
+      'config/force_open':false,
+      finalRanking:null
+    });
+  }
+  ['inningResults','prizeWinners','inning_lock','manual_locked','force_open',
+   'publishedResults','prizeBoardData','finalPublished','finalRanking'].forEach(k=>localStorage.removeItem(k));
+  sessionStorage.clear();
+  alert('✅ 초기화되었습니다. 페이지를 새로고침합니다.');
+  location.reload();
+}
+// ─── 최종 순위 계산 (동점자 처리 포함) ───
+// 우선순위: ① 총점 → ② 이닝베팅 참여 횟수(9회 중 몇 회 참여했는지, 많을수록 우선)
+//          → ③ 최종점수 정답 여부 → ④ 홈런 정답 여부 → ⑤ 그래도 동점이면 이 시점에 1회성 추첨으로 확정
+// 계산 결과를 finalRanking에 고정 저장 → 이후 참가자가 새로고침해도 순위가 바뀌지 않음(추첨을 매번 다시 하지 않음)
+async function computeFinalRanking(pointsSnap, scoreCorrectArr, hrCorrectArr){
+  const scoreOK=new Set(scoreCorrectArr.map(c=>pointsKey(c.name,c.d2)));
+  const hrOK=new Set(hrCorrectArr.map(c=>pointsKey(c.name,c.d2)));
+  const allInningSubs = await fbGet('submissions/inning') || {};
+
+  const arr=Object.entries(pointsSnap).map(([key,p])=>({
+    key, name:p.name, d1:p.d1, d2:p.d2, total:p.total||0,
+    participation: allInningSubs[key]?Object.keys(allInningSubs[key]).length:0,
+    scoreOK: scoreOK.has(key)?1:0,
+    hrOK: hrOK.has(key)?1:0,
+    _rand: Math.random() // 동점 최종 타이브레이커 — 이 계산 시점에 딱 한 번만 부여하고 이후 고정
+  }));
+
+  arr.sort((a,b)=>
+    b.total-a.total ||
+    b.participation-a.participation ||
+    b.scoreOK-a.scoreOK ||
+    b.hrOK-a.hrOK ||
+    a._rand-b._rand
+  );
+  arr.forEach((p,i)=>{ p.rank=i+1; delete p._rand; });
+
+  if(DB) await fbSet('finalRanking', arr);
+  localStorage.setItem('finalRanking', JSON.stringify(arr));
+  return arr;
+}
+
+async function processFinalResult(){
+  const kt=document.getElementById('a-final-kt').value;
+  const lg=document.getElementById('a-final-lg').value;
+  const hr=document.getElementById('a-final-hr').value;
+  if(kt===''||lg===''){alert('실제 스코어를 모두 입력해주세요!');return;}
+  const area=document.getElementById('final-result-area');
+  area.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0;">처리 중...</div>';
+
+  const scoreVal=lg+':'+kt; // DB저장 형식: LG:KT
+  const allScoreBets=await fbGet('submissions/score');
+  const allHrBets=await fbGet('submissions/homerun');
+  const scoreCorrect=[],hrCorrect=[];
+
+  if(allScoreBets) Object.values(allScoreBets).forEach(b=>{
+    if(b.value===scoreVal) scoreCorrect.push(b);
+  });
+  if(allHrBets) Object.values(allHrBets).forEach(b=>{
+    if(String(b.value)===String(hr)||(hr==='3+'&&parseInt(b.value)>=3)) hrCorrect.push(b);
+  });
+
+  // 포인트 지급: 재처리(스코어 정정 등) 시 이전 지급분을 먼저 회수한 뒤 다시 지급 → 중복지급 방지
+  await reversePoints('pointsLog/score');
+  await reversePoints('pointsLog/homerun');
+  await awardPoints(scoreCorrect.map(c=>({name:c.name,d1:c.d1,d2:c.d2,pts:3})), 'pointsLog/score');
+  await awardPoints(hrCorrect.map(c=>({name:c.name,d1:c.d1,d2:c.d2,pts:3})), 'pointsLog/homerun');
+
+  let html=`<div class="prize-result">
+    <div class="pr-title">최종 결과: KT ${kt} : LG ${lg} · 홈런 ${hr}개</div>
+    <div class="pr-row" style="font-weight:700;">🏟 점수 정답자 ${scoreCorrect.length}명 (포인트 +3)</div>
+    ${scoreCorrect.map(c=>`<div class="pr-row">${c.name} <span style="font-size:11px;color:var(--text3);">(${c.d2})</span></div>`).join('')||'<div class="pr-row" style="color:var(--text3);">정답자 없음</div>'}
+    <div class="pr-row" style="font-weight:700;margin-top:6px;">💥 홈런 정답자 ${hrCorrect.length}명 (포인트 +3)</div>
+    ${hrCorrect.map(c=>`<div class="pr-row">${c.name} <span style="font-size:11px;color:var(--text3);">(${c.d2})</span></div>`).join('')||'<div class="pr-row" style="color:var(--text3);">정답자 없음</div>'}
+  </div>`;
+
+  // 관리자 미리보기: 전체 순위표 (동점자는 참여횟수→최종점수 정답→홈런 정답 순으로 우선순위 결정)
+  const finalPointsSnap = await fbGet('points');
+  if(finalPointsSnap){
+    const rankArr = await computeFinalRanking(finalPointsSnap, scoreCorrect, hrCorrect);
+    html += `<div style="margin-top:12px;">
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;">👀 관리자 미리보기 — 동점자는 이닝 참여횟수→최종점수 정답→홈런 정답 순으로 결정 (참가자에겐 아직 비공개)</div>
+      ${buildRankingHTML(rankArr)}
+    </div>`;
+  }
+  area.innerHTML=html;
+}
+
+const ADMIN_PW='0127';
+function openAdmin(){
+  if(sessionStorage.getItem('adminOK')!=='1'){
+    const pw=prompt('관리자 비밀번호');
+    if(pw!==ADMIN_PW){ if(pw!==null) alert('비밀번호가 틀렸습니다.'); return; }
+    sessionStorage.setItem('adminOK','1');
+  }
+  document.getElementById('admin-overlay').classList.add('open');
+  switchAdminTab('predict');
+}
+function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');}
+function closeAdminOut(e){if(e.target===document.getElementById('admin-overlay'))closeAdmin();}
+
+// ─── 초기화 ───
+(function init(){
+  document.getElementById('a-firebase-display').textContent=FB_URL;
+  document.getElementById('a-code').value=VERIFY_CODE;
+  if(FB_URL){
+    initFirebase();
+  } else {
+    // Firebase URL 없어도 리더보드 안내 표시
+    listenLeaderboard();
+  }
+  renderPrizeBoard();
+  renderFinalBoard();
+  // 관리자 final-publish-btn 초기 상태
+  const _fpub=localStorage.getItem('finalPublished')==='true';
+  const _fpbtn=document.getElementById('final-publish-btn');
+  if(_fpbtn){ _fpbtn.textContent=_fpub?'📣 공개 중':'⏸ 비공개'; _fpbtn.className='lock-btn '+(_fpub?'open':'closed'); }
+  if(user){ showGamePage(); }
+})();
+</script>
+</body>
+</html>
